@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EventController;
@@ -32,6 +33,9 @@ Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index
 
 Route::get('/agenda', [EventController::class, 'index'])->name('events.index');
 Route::get('/agenda/{event}', [EventController::class, 'show'])->name('events.show');
+
+Route::get('/artikel', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/artikel/{article}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

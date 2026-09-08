@@ -35,4 +35,14 @@
             <changefreq>daily</changefreq>
         </url>
     @endforeach
+
+    @foreach($articles as $article)
+        <url>
+            <loc>{{ $article['loc'] }}</loc>
+            @if($article['lastmod'])
+                <lastmod>{{ $article['lastmod']->toAtomString() }}</lastmod>
+            @endif
+            <changefreq>weekly</changefreq>
+        </url>
+    @endforeach
 </urlset>

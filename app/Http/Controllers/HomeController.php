@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\HomepageContent;
@@ -58,10 +59,16 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $latestArticles = Article::published()
+            ->orderByDesc('published_at')
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get();
+
         return view('home', compact(
             'hero', 'intro', 'stats', 'promotion', 'contactCta',
             'venues', 'services', 'packages', 'featuredTestimonials',
-            'galleries', 'upcomingEvents',
+            'galleries', 'upcomingEvents', 'latestArticles',
         ));
     }
 }

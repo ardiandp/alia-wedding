@@ -328,6 +328,39 @@
         </section>
     @endif
 
+    {{-- ============ LATEST ARTICLES ============ --}}
+    @if($latestArticles->isNotEmpty())
+        <section class="py-14 sm:py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-3xl sm:text-4xl font-bold text-gray-900">Berita &amp; Artikel</h2>
+                    <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Tips dan kabar terbaru seputar pernikahan</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($latestArticles as $article)
+                        <a href="{{ route('articles.show', $article) }}" class="group block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+                            @if($article->image)
+                                <div class="h-44 overflow-hidden">
+                                    <img src="{{ image_url($article->image) }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                                </div>
+                            @endif
+                            <div class="p-6">
+                                <span class="text-xs uppercase tracking-wide text-rose-600 font-semibold">{{ $article->category ?? 'Artikel' }}</span>
+                                <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-rose-700 transition text-sm">{{ $article->title }}</h3>
+                                <p class="mt-3 text-xs text-gray-400">{{ $article->published_at?->translatedFormat('d F Y') }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+                <div class="mt-10 text-center">
+                    <a href="{{ route('articles.index') }}" class="inline-flex items-center px-6 py-3 border-2 border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-white font-semibold rounded-full transition-all duration-300">
+                        Lihat Semua Artikel
+                    </a>
+                </div>
+            </div>
+        </section>
+    @endif
+
     {{-- ============ CONTACT CTA ============ --}}
     <section class="py-14 sm:py-20 bg-rose-700">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\About;
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\HomepageContent;
@@ -25,6 +26,7 @@ class DemoDataSeeder extends Seeder
         $this->seedServices();
         $this->seedPackages();
         $this->seedEvents();
+        $this->seedArticles();
         $this->seedGalleries();
         $this->seedTestimonials();
         $this->seedTeams();
@@ -231,6 +233,66 @@ class DemoDataSeeder extends Seeder
                 'image' => $eventImages[$i % count($eventImages)],
                 'description' => 'Acara '.$data['title'].' di Alia Wedding.',
             ]));
+        }
+    }
+
+    private function seedArticles(): void
+    {
+        $articles = [
+            [
+                'title' => 'Tips Memilih Venue Pernikahan yang Tepat',
+                'category' => 'Tips Pernikahan',
+                'image' => 'seed/events/expo.jpg',
+                'published_at' => now()->subDays(2),
+                'excerpt' => 'Panduan praktis memilih venue impian yang sesuai dengan budget, jumlah tamu, dan konsep pernikahan Anda.',
+                'body' => "Memilih venue pernikahan adalah keputusan terbesar dalam persiapan pernikahan. Sebelum menentukan, buatlah daftar prioritas seperti kapasitas tamu, lokasi, dan fasilitas yang tersedia.\n\nPertama, tetapkan anggaran untuk venue sekitar 40% dari total budget pernikahan Anda. Bandingkan beberapa venue sekaligus agar mudah menilai nilai tiap opsi.\n\nKedua, jadwalkan kunjungan langsung. Anda perlu melihat kondisi ruangan, pencahayaan, dan area foto di jam yang sama dengan jam resepsi. Jangan ragu membawa fotografer untuk mencoba konsep foto.\n\nTerakhir, pastikan venue menyediakan layanan lengkap seperti catering, dekorasi, dan koordinator acara agar koordinasi di hari H lebih mudah dan tenang.",
+            ],
+            [
+                'title' => 'Inspirasi Dekorasi Pernikahan Taman',
+                'category' => 'Dekorasi',
+                'image' => 'seed/services/s-dekorasi.jpg',
+                'published_at' => now()->subDays(5),
+                'excerpt' => 'Dekorasi outdoor nan romantis dengan nuansa hijau alami untuk pernikahan taman yang tak terlupakan.',
+                'body' => "Dekorasi pernikahan taman mengutamakan harmoni dengan alam. Pilih palet warna yang lembut seperti putih, krem, dan hijau daun agar menyatu dengan lanskap.\n\nGunakan pelengkung bunga sebagai titik fokus dan bubuhkan detail seperti kursi minimalis dengan sentuhan satin. Lampu fairy string menciptakan suasana hangat saat sore menuju malam.\n\nJangan lupa area meja tamu: pilih taplak linen lembut dan vas bunga rendah agar percakapan tetap nyaman. Dengan perencanaan matang, nuansa taman Anda akan terasa private namun megah.",
+            ],
+            [
+                'title' => '6 Hal yang Wajib Dipersiapkan 3 Bulan Sebelum Hari H',
+                'category' => 'Checklist',
+                'image' => 'seed/events/fair.jpg',
+                'published_at' => now()->subDays(9),
+                'excerpt' => 'Dari vendor hingga balasan undangan, ini daftar persiapan penting agar pernikahan Anda berjalan lancar.',
+                'body' => "Tiga bulan sebelum hari H adalah waktu yang tepat untuk mengunci seluruh vendor: venue, catering, fotografer, make up artist, dan hiburan. Pastikan kontrak jelas dan jadwal pelunasan dicatat rapi.\n\nLengkapi juga detail administrasi seperti akta perkawinan dan dokumen KUA. Mulai kirim undangan digital dan buat daftar konfirmasi hadir untuk mempermudah perhitungan jumlah tamu.\n\nTerakhir, lakukan fitting akhir untuk busana dan lakukan gladi bersih atau rehearsal di venue. Dengan segala hal terorganisir, hati Anda lebih tenang menikmati hari penting tersebut.",
+            ],
+            [
+                'title' => 'Rangkaian Acara Pernikahan Adat yang Menyentuh',
+                'category' => 'Inspirasi',
+                'image' => 'seed/venues/garden-1.jpg',
+                'published_at' => now()->subDays(14),
+                'excerpt' => 'Menggabungkan adat dan modern dalam satu rangkaian acara yang khidmat dan berkesan bagi keluarga.',
+                'body' => "Pernikahan adat selalu memiliki kekayaan makna. Mulai dari seserahan, akad, hingga resepsi, setiap tahap membawa doa dan harapan baik untuk kedua mempelai.\n\nPadukan prosesi adat dengan sentuhan modern agar tetap relevan: gunakan dresscode kontemporer, tata rias yang segar, serta musik pengiring yang lembut. Sesi foto keluarga setelah akad akan menjadi kenangan berharga.\n\nPilih MC yang paham tata cara adat dan komunikatif. Dengan alur yang jelas, tamu akan larut dalam suasana khidmat sekaligus meriah.",
+            ],
+            [
+                'title' => 'Mengenal Paket Pernikahan All-in-One',
+                'category' => 'Tips Pernikahan',
+                'image' => 'seed/packages/platinum.jpg',
+                'published_at' => null,
+                'status' => 'draft',
+                'excerpt' => 'Draf artikel tentang keuntungan paket pernikahan all-in-one bagi pasangan sibuk.',
+                'body' => 'Artikel ini masih dalam penyusunan dan akan segera terbit.',
+            ],
+        ];
+
+        foreach ($articles as $data) {
+            Article::create([
+                'title' => $data['title'],
+                'slug' => Str::slug($data['title']),
+                'category' => $data['category'],
+                'excerpt' => $data['excerpt'],
+                'body' => $data['body'],
+                'image' => $data['image'],
+                'status' => $data['status'] ?? 'published',
+                'published_at' => $data['published_at'],
+            ]);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\Lead;
@@ -58,6 +59,17 @@ class AdminPagesTest extends TestCase
         $this->get(route('admin.events.create'))->assertOk();
         $event = Event::first();
         $this->get(route('admin.events.edit', $event))->assertOk();
+    }
+
+    public function test_articles_admin_pages_render(): void
+    {
+        $this->actingAs($this->admin);
+        $this->get(route('admin.articles.index'))->assertOk();
+        $this->get(route('admin.articles.create'))->assertOk();
+        $article = Article::first();
+        if ($article) {
+            $this->get(route('admin.articles.edit', $article))->assertOk();
+        }
     }
 
     public function test_galleries_admin_pages_render(): void

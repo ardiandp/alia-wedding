@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\Venue;
@@ -19,6 +20,7 @@ class SitemapController extends Controller
             route('packages.index'),
             route('gallery.index'),
             route('events.index'),
+            route('articles.index'),
             route('contact'),
         ];
 
@@ -28,12 +30,15 @@ class SitemapController extends Controller
             ->map(fn (Package $p) => ['loc' => route('packages.show', $p), 'lastmod' => $p->updated_at]);
         $events = Event::where('status', 'published')->get()
             ->map(fn (Event $e) => ['loc' => route('events.show', $e), 'lastmod' => $e->updated_at]);
+        $articles = Article::published()->get()
+            ->map(fn (Article $a) => ['loc' => route('articles.show', $a), 'lastmod' => $a->updated_at]);
 
         $content = response()->view('sitemap', [
             'staticUrls' => $staticUrls,
             'venues' => $venues,
             'packages' => $packages,
             'events' => $events,
+            'articles' => $articles,
         ]);
 
         return $content->header('Content-Type', 'application/xml');

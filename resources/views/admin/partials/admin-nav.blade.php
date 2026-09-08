@@ -6,6 +6,7 @@ $adminNav = [
     ['label' => 'Venue', 'route' => 'admin.venues.index', 'pattern' => 'admin.venues.*'],
     ['label' => 'Paket', 'route' => 'admin.packages.index', 'pattern' => 'admin.packages.*'],
     ['label' => 'Agenda', 'route' => 'admin.events.index', 'pattern' => 'admin.events.*'],
+    ['label' => 'Artikel', 'route' => 'admin.articles.index', 'pattern' => 'admin.articles.*'],
     ['label' => 'Galeri', 'route' => 'admin.galleries.index', 'pattern' => 'admin.galleries.*'],
     ['label' => 'Testimoni', 'route' => 'admin.testimonials.index', 'pattern' => 'admin.testimonials.*'],
     ['label' => 'Tim', 'route' => 'admin.teams.index', 'pattern' => 'admin.teams.*'],

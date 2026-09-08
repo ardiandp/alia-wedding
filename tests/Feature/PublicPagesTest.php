@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Article;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\User;
@@ -49,6 +50,15 @@ class PublicPagesTest extends TestCase
         $event = Event::first();
         if ($event) {
             $this->get(route('events.show', $event))->assertOk();
+        }
+    }
+
+    public function test_articles_pages_render(): void
+    {
+        $this->get(route('articles.index'))->assertOk();
+        $article = Article::where('status', 'published')->first();
+        if ($article) {
+            $this->get(route('articles.show', $article))->assertOk();
         }
     }
 

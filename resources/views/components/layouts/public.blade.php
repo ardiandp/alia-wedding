@@ -45,6 +45,7 @@
                     <a href="{{ route('packages.index') }}" class="text-sm font-medium text-gray-700 hover:text-rose-700 transition">Package</a>
                     <a href="{{ route('gallery.index') }}" class="text-sm font-medium text-gray-700 hover:text-rose-700 transition">Gallery</a>
                     <a href="{{ route('events.index') }}" class="text-sm font-medium text-gray-700 hover:text-rose-700 transition">Agenda</a>
+                    <a href="{{ route('articles.index') }}" class="text-sm font-medium text-gray-700 hover:text-rose-700 transition">Artikel</a>
                     <a href="{{ route('contact') }}" class="text-sm font-medium text-white bg-rose-700 hover:bg-rose-800 px-5 py-2.5 rounded-full transition">Konsultasi</a>
                 </div>
 
@@ -65,6 +66,7 @@
                 <a href="{{ route('packages.index') }}" class="block py-2.5 px-3 text-sm font-medium rounded-lg hover:bg-rose-50 text-gray-700">Package</a>
                 <a href="{{ route('gallery.index') }}" class="block py-2.5 px-3 text-sm font-medium rounded-lg hover:bg-rose-50 text-gray-700">Gallery</a>
                 <a href="{{ route('events.index') }}" class="block py-2.5 px-3 text-sm font-medium rounded-lg hover:bg-rose-50 text-gray-700">Agenda</a>
+                <a href="{{ route('articles.index') }}" class="block py-2.5 px-3 text-sm font-medium rounded-lg hover:bg-rose-50 text-gray-700">Artikel</a>
                 <a href="{{ route('contact') }}" class="block py-2.5 px-3 text-sm font-medium text-center text-white bg-rose-700 rounded-lg">Konsultasi</a>
             </div>
         </div>
@@ -96,6 +98,7 @@
                         <li><a href="{{ route('packages.index') }}" class="hover:text-white transition">Package</a></li>
                         <li><a href="{{ route('gallery.index') }}" class="hover:text-white transition">Gallery</a></li>
                         <li><a href="{{ route('events.index') }}" class="hover:text-white transition">Agenda</a></li>
+                        <li><a href="{{ route('articles.index') }}" class="hover:text-white transition">Artikel</a></li>
                     </ul>
                 </div>
 

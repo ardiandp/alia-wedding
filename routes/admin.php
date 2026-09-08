@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AboutController;
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -49,6 +50,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff']
         Route::delete('packages/items/{item}', [PackageController::class, 'destroyItem'])->name('packages.items.destroy');
 
         Route::resource('events', EventController::class)->except(['show']);
+        Route::resource('articles', ArticleController::class)->except(['show']);
         Route::resource('galleries', GalleryController::class)->except(['show']);
         Route::resource('testimonials', TestimonialController::class)->except(['show']);
         Route::resource('teams', TeamController::class)->except(['show']);
