@@ -2,6 +2,7 @@
 $adminNav = [
     ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard'],
     ['label' => 'Prospek', 'route' => 'admin.leads.index', 'pattern' => 'admin.leads.*'],
+    ['label' => 'Media', 'route' => 'admin.media.index', 'pattern' => 'admin.media.*'],
     ['label' => 'Venue', 'route' => 'admin.venues.index', 'pattern' => 'admin.venues.*'],
     ['label' => 'Paket', 'route' => 'admin.packages.index', 'pattern' => 'admin.packages.*'],
     ['label' => 'Agenda', 'route' => 'admin.events.index', 'pattern' => 'admin.events.*'],

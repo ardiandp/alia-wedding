@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\MediaLibrary;
 use App\Models\Setting;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 if (! function_exists('setting')) {
     /**
@@ -55,6 +57,26 @@ if (! function_exists('image_url')) {
         }
 
         return asset('storage/'.$path);
+    }
+}
+
+if (! function_exists('media_library')) {
+    /**
+     * Resolve the singleton model backing the central media library.
+     */
+    function media_library(): MediaLibrary
+    {
+        return MediaLibrary::firstOrCreate([], []);
+    }
+}
+
+if (! function_exists('media_relative_path')) {
+    /**
+     * Public-relative storage path of a library media item.
+     */
+    function media_relative_path(Media $media): string
+    {
+        return $media->id.'/'.$media->file_name;
     }
 }
 

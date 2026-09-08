@@ -101,22 +101,39 @@ class DemoDataSeeder extends Seeder
             ],
         ];
 
-        foreach ($venues as $data) {
+        $photoPool = [
+            'seed/venues/garden-1.jpg',
+            'seed/venues/grand-hall.jpg',
+            'seed/venues/rooftop.jpg',
+            'seed/venues/beachside.jpg',
+            'seed/venues/classic.jpg',
+            'seed/venues/garden-ext.jpg',
+        ];
+
+        foreach ($venues as $idx => $data) {
             $facilitiesRaw = $data['facilities'];
             unset($data['facilities']);
             $data['slug'] = Str::slug($data['name']);
             $data['facility_note'] = $facilitiesRaw;
+            $hero = $photoPool[$idx % count($photoPool)];
+            $data['hero_image'] = $hero;
+            $data['og_image'] = $hero;
             $venue = Venue::create($data);
 
             $facilities = explode(', ', $facilitiesRaw);
-            foreach ($facilities as $i => $facility) {
+            foreach ($facilities as $index => $facility) {
                 VenueFacility::create([
                     'venue_id' => $venue->id,
                     'name' => $facility,
+                    'sort_order' => $index,
                 ]);
             }
 
-            $images = ['https://picsum.photos/seed/venue'.$venue->id.'/1200/800', 'https://picsum.photos/seed/venue2'.$venue->id.'/1200/800', 'https://picsum.photos/seed/venue3'.$venue->id.'/1200/800'];
+            $images = [
+                $photoPool[($idx + 1) % count($photoPool)],
+                $photoPool[($idx + 2) % count($photoPool)],
+                $photoPool[($idx + 3) % count($photoPool)],
+            ];
             foreach ($images as $i => $image) {
                 VenueImage::create([
                     'venue_id' => $venue->id,
@@ -139,10 +156,19 @@ class DemoDataSeeder extends Seeder
             ['name' => 'Documentation', 'slug' => 'documentation', 'icon' => 'camera'],
         ];
 
+        $serviceImages = [
+            'seed/services/s-akad.jpg',
+            'seed/services/s-sangjit.jpg',
+            'seed/services/s-resepsi.jpg',
+            'seed/services/s-dekorasi.jpg',
+            'seed/services/s-video.jpg',
+            'seed/services/s-foto.jpg',
+        ];
+
         foreach ($services as $i => $service) {
             Service::create($service + [
                 'description' => 'Layanan '.$service['name'].' premium untuk pernikahan Anda.',
-                'image' => 'https://picsum.photos/seed/service'.$i.'/800/600',
+                'image' => $serviceImages[$i % count($serviceImages)],
                 'sort_order' => $i,
                 'is_active' => true,
             ]);
@@ -158,10 +184,21 @@ class DemoDataSeeder extends Seeder
             ['name' => 'Custom Package', 'price' => null, 'price_type' => 'custom', 'guest_capacity' => null, 'is_featured' => false, 'items' => ['Venue', 'Sesuai kebutuhan']],
         ];
 
-        foreach ($packages as $data) {
+        $packageImages = [
+            'seed/packages/silver.jpg',
+            'seed/packages/gold.jpg',
+            'seed/packages/platinum.jpg',
+            'seed/packages/diamond.jpg',
+        ];
+
+        foreach ($packages as $idx => $data) {
             $items = $data['items'];
             unset($data['items']);
-            $package = Package::create($data + ['slug' => Str::slug($data['name']), 'is_active' => true]);
+            $package = Package::create($data + [
+                'slug' => Str::slug($data['name']),
+                'image' => $packageImages[$idx % count($packageImages)],
+                'is_active' => true,
+            ]);
 
             foreach ($items as $i => $item) {
                 PackageItem::create([
@@ -183,13 +220,15 @@ class DemoDataSeeder extends Seeder
             ['title' => 'Wedding Package Launch', 'event_type' => 'promotion', 'start_date' => now()->addDays(5)->format('Y-m-d'), 'end_date' => now()->addDays(30)->format('Y-m-d'), 'status' => 'published'],
         ];
 
+        $eventImages = ['seed/events/expo.jpg', 'seed/events/fair.jpg', 'seed/events/expo.jpg', 'seed/events/fair.jpg'];
+
         foreach ($events as $i => $data) {
             Event::create(array_merge($data, [
                 'slug' => Str::slug($data['title']),
                 'venue_id' => $i % count($venues) === 0 ? $venues[0] : $venues[$i % count($venues)],
                 'start_time' => '10:00:00',
                 'end_time' => '21:00:00',
-                'image' => 'https://picsum.photos/seed/event'.$i.'/1200/600',
+                'image' => $eventImages[$i % count($eventImages)],
                 'description' => 'Acara '.$data['title'].' di Alia Wedding.',
             ]));
         }
@@ -197,13 +236,22 @@ class DemoDataSeeder extends Seeder
 
     private function seedGalleries(): void
     {
+        $galleryImages = [
+            'seed/galleries/g1.jpg',
+            'seed/galleries/g2.jpg',
+            'seed/galleries/g3.jpg',
+            'seed/galleries/g4.jpg',
+            'seed/galleries/g5.jpg',
+            'seed/galleries/g6.jpg',
+        ];
+
         $categories = ['venue', 'wedding', 'decoration', 'reception', 'bride_groom', 'table_setting', 'garden', 'real_wedding'];
         foreach ($categories as $catIndex => $category) {
             for ($i = 0; $i < 4; $i++) {
                 Gallery::create([
                     'title' => Str::title(str_replace('_', ' ', $category)).' '.($i + 1),
                     'category' => $category,
-                    'image' => 'https://picsum.photos/seed/gal'.$category.$i.'/800/600',
+                    'image' => $galleryImages[($catIndex + $i) % count($galleryImages)],
                     'description' => 'Galeri '.str_replace('_', ' ', $category),
                     'sort_order' => $catIndex * 4 + $i,
                     'is_active' => true,
@@ -222,11 +270,13 @@ class DemoDataSeeder extends Seeder
             ['customer_name' => 'Rina', 'partner_name' => 'Budi', 'rating' => 4, 'testimonial' => 'Very satisfied with the venue and the wedding organizer. Highly recommended!', 'is_featured' => false],
         ];
 
+        $testimonialImages = ['seed/testimonials/t1.jpg', 'seed/testimonials/t2.jpg', 'seed/testimonials/t3.jpg', 'seed/testimonials/t1.jpg'];
+
         foreach ($data as $i => $item) {
             Testimonial::create(array_merge($item, [
                 'wedding_date' => now()->subMonths($i + 1)->format('Y-m-d'),
                 'venue_id' => $venues[$i % count($venues)],
-                'photo' => 'https://picsum.photos/seed/testimonial'.$i.'/200/200',
+                'photo' => $testimonialImages[$i % count($testimonialImages)],
                 'is_active' => true,
             ]));
         }
@@ -241,9 +291,16 @@ class DemoDataSeeder extends Seeder
             ['name' => 'Dedi Kurniawan', 'position' => 'Senior Photographer', 'description' => 'Dokumentasi terbaik untuk momen paling berharga.'],
         ];
 
+        $teamImages = [
+            'seed/teams/ella.jpg',
+            'seed/teams/raka.jpg',
+            'seed/teams/salsa.jpg',
+            'seed/teams/dimas.jpg',
+        ];
+
         foreach ($data as $i => $item) {
             Team::create($item + [
-                'photo' => 'https://picsum.photos/seed/team'.$i.'/400/400',
+                'photo' => $teamImages[$i % count($teamImages)],
                 'instagram' => 'https://instagram.com/aliawedding',
                 'sort_order' => $i,
                 'is_active' => true,
@@ -256,7 +313,7 @@ class DemoDataSeeder extends Seeder
         About::create([
             'title' => 'Tentang Alia Wedding',
             'description' => 'Alia Wedding adalah penyedia venue pernikahan dan wedding organizer premium yang telah membantu ribuan pasangan mewujudkan hari bahagia mereka.',
-            'image' => 'https://picsum.photos/seed/about/1200/800',
+            'image' => 'seed/venues/garden-1.jpg',
             'company_history' => 'Didirikan sejak 2015, Alia Wedding tumbuh menjadi salah satu destinasi pernikahan terpercaya di Indonesia dengan berbagai venue mewah dan layanan wedding organizer profesional.',
             'vision' => 'Menjadi penyedia pengalaman pernikahan terbaik di Indonesia.',
             'missions' => [
@@ -272,14 +329,14 @@ class DemoDataSeeder extends Seeder
         $content = [
             ['hero', 'heading', 'Your Dream Wedding Starts Here'],
             ['hero', 'description', 'Venue pernikahan premium dan wedding organizer profesional untuk hari bahagia Anda.'],
-            ['hero', 'image', 'https://picsum.photos/seed/hero/1920/1080'],
+            ['hero', 'image', 'seed/venues/rooftop.jpg'],
             ['hero', 'cta_primary_text', 'Explore Venue'],
             ['hero', 'cta_primary_url', '/venues'],
             ['hero', 'cta_secondary_text', 'Consultation'],
             ['hero', 'cta_secondary_url', '/contact'],
             ['intro', 'title', 'Alia Wedding'],
             ['intro', 'description', 'Lebih dari sekadar venue pernikahan. Kami menciptakan pengalaman mewah yang akan Anda kenang selamanya.'],
-            ['intro', 'image', 'https://picsum.photos/seed/intro/1200/800'],
+            ['intro', 'image', 'seed/galleries/g2.jpg'],
             ['stats', 'happy_couples', '500'],
             ['stats', 'happy_couples_label', 'Happy Couples'],
             ['stats', 'years_experience', '10'],

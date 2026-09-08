@@ -26,10 +26,7 @@ class TeamController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
-        }
-
+        $validated['photo'] = blank($validated['photo'] ?? null) ? null : $validated['photo'];
         $validated['is_active'] = $request->boolean('is_active');
 
         Team::create($validated);
@@ -46,10 +43,7 @@ class TeamController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('teams', 'public');
-        }
-
+        $validated['photo'] = blank($validated['photo'] ?? null) ? null : $validated['photo'];
         $validated['is_active'] = $request->boolean('is_active');
 
         $team->update($validated);
@@ -69,7 +63,7 @@ class TeamController extends Controller
         return [
             'name' => ['required', 'string', 'max:255'],
             'position' => ['required', 'string', 'max:255'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'photo' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'instagram' => ['nullable', 'url', 'max:255'],
             'linkedin' => ['nullable', 'url', 'max:255'],

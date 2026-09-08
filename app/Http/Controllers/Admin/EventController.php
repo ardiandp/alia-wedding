@@ -30,9 +30,7 @@ class EventController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('events', 'public');
-        }
+        $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
         $validated['slug'] = Str::slug($validated['title']);
 
         Event::create($validated);
@@ -51,9 +49,7 @@ class EventController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('events', 'public');
-        }
+        $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
         $validated['slug'] = Str::slug($validated['title']);
 
         $event->update($validated);
@@ -79,7 +75,7 @@ class EventController extends Controller
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'start_time' => ['nullable', 'date_format:H:i'],
             'end_time' => ['nullable', 'date_format:H:i'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'in:draft,published,completed,cancelled'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],

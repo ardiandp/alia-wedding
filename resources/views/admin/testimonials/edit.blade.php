@@ -33,13 +33,7 @@
                             </div>
 
                             <div>
-                                <label for="photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Foto</label>
-                                <input id="photo" type="file" name="photo" accept="image/jpeg,image/png,image/webp"
-                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
-                                <x-input-error :messages="$errors->get('photo')" class="mt-2" />
-                                @if ($testimonial->photo)
-                                    <img src="{{ asset('storage/' . $testimonial->photo) }}" alt="{{ $testimonial->customer_name }}" class="mt-3 h-20 w-20 rounded-full object-cover">
-                                @endif
+                                <x-admin.media-picker name="photo" label="Ganti Foto" :value="$testimonial->photo" />
                             </div>
 
                             <div>

@@ -30,14 +30,8 @@
                                 <x-input-error :messages="$errors->get('title')" class="mt-2" />
                             </div>
 
-                            <div>
-                                <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Gambar</label>
-                                <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/webp"
-                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
-                                <x-input-error :messages="$errors->get('image')" class="mt-2" />
-                                @if ($about?->image)
-                                    <img src="{{ asset('storage/' . $about->image) }}" alt="Gambar tentang" class="mt-3 h-28 w-full rounded-md object-cover">
-                                @endif
+                            <div class="sm:col-span-2">
+                                <x-admin.media-picker name="image" label="Ganti Gambar" :value="$about?->image" />
                             </div>
 
                             <div class="sm:col-span-2">

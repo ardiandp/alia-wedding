@@ -12,6 +12,7 @@ use App\Models\Testimonial;
 use App\Models\User;
 use App\Models\Venue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tests\TestCase;
 
 class AdminPagesTest extends TestCase
@@ -119,6 +120,20 @@ class AdminPagesTest extends TestCase
         $this->get(route('admin.about.edit'))->assertOk();
         $this->get(route('admin.homepage.edit'))->assertOk();
         $this->get(route('admin.settings.index'))->assertOk();
+    }
+
+    public function test_media_library_pages_render(): void
+    {
+        $this->actingAs($this->admin);
+        $this->get(route('admin.media.index'))->assertOk();
+
+        $media = Media::first();
+        if ($media) {
+            $this->withHeader('X-Requested-With', 'XMLHttpRequest')
+                ->get(route('admin.media.browser'))
+                ->assertOk()
+                ->assertSee(media_relative_path($media));
+        }
     }
 
     public function test_staff_cannot_access_admin_only_pages(): void

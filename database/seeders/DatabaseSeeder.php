@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             SettingsSeeder::class,
             UserSeeder::class,
+            MediaLibrarySeeder::class,
             DemoDataSeeder::class,
         ]);
     }

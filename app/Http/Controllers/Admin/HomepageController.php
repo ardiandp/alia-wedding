@@ -68,6 +68,8 @@ class HomepageController extends Controller
     {
         $validated = $request->validate([
             'sections' => ['required', 'array'],
+            'hero_image' => ['nullable', 'string', 'max:255'],
+            'intro_image' => ['nullable', 'string', 'max:255'],
         ]);
 
         foreach (self::SECTIONS as $section => $keys) {
@@ -79,6 +81,15 @@ class HomepageController extends Controller
                     ['value' => $value]
                 );
             }
+        }
+
+        foreach (['hero' => 'hero_image', 'intro' => 'intro_image'] as $section => $field) {
+            $value = $request->input($field);
+
+            HomepageContent::updateOrCreate(
+                ['section' => $section, 'key' => 'image'],
+                ['value' => blank($value) ? '' : $value]
+            );
         }
 
         return back()->with('success', 'Konten homepage berhasil diperbarui.');

@@ -35,7 +35,7 @@ class PackageController extends Controller
             'description' => ['nullable', 'string'],
             'price' => ['nullable', 'numeric', 'min:0'],
             'price_type' => ['required', 'in:fixed,starting_from,custom'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image' => ['nullable', 'string', 'max:255'],
             'guest_capacity' => ['nullable', 'integer', 'min:1'],
             'is_featured' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
@@ -43,10 +43,7 @@ class PackageController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('packages', 'public');
-        }
-
+        $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);
@@ -72,7 +69,7 @@ class PackageController extends Controller
             'description' => ['nullable', 'string'],
             'price' => ['nullable', 'numeric', 'min:0'],
             'price_type' => ['required', 'in:fixed,starting_from,custom'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image' => ['nullable', 'string', 'max:255'],
             'guest_capacity' => ['nullable', 'integer', 'min:1'],
             'is_featured' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
@@ -80,10 +77,7 @@ class PackageController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('packages', 'public');
-        }
-
+        $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);

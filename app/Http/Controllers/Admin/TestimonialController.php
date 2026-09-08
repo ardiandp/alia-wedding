@@ -29,10 +29,7 @@ class TestimonialController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('testimonials', 'public');
-        }
-
+        $validated['photo'] = blank($validated['photo'] ?? null) ? null : $validated['photo'];
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
 
@@ -52,10 +49,7 @@ class TestimonialController extends Controller
     {
         $validated = $request->validate($this->rules());
 
-        if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('testimonials', 'public');
-        }
-
+        $validated['photo'] = blank($validated['photo'] ?? null) ? null : $validated['photo'];
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active');
 
@@ -76,7 +70,7 @@ class TestimonialController extends Controller
         return [
             'customer_name' => ['required', 'string', 'max:255'],
             'partner_name' => ['nullable', 'string', 'max:255'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'photo' => ['nullable', 'string', 'max:255'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'testimonial' => ['required', 'string'],
             'wedding_date' => ['nullable', 'date'],

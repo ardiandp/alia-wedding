@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\HomepageController;
 use App\Http\Controllers\Admin\LeadController;
+use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
@@ -32,6 +33,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff']
 
     // Content management (admin only)
     Route::middleware('admin')->group(function () {
+        Route::get('media', [MediaLibraryController::class, 'index'])->name('media.index');
+        Route::get('media/browser', [MediaLibraryController::class, 'browser'])->name('media.browser');
+        Route::post('media', [MediaLibraryController::class, 'store'])->name('media.store');
+        Route::delete('media/{media}', [MediaLibraryController::class, 'destroy'])->name('media.destroy');
+
         Route::resource('venues', VenueController::class)->except(['show']);
         Route::post('venues/{venue}/images', [VenueController::class, 'storeImage'])->name('venues.images.store');
         Route::delete('venues/images/{image}', [VenueController::class, 'destroyImage'])->name('venues.images.destroy');

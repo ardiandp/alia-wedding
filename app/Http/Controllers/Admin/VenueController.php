@@ -35,7 +35,7 @@ class VenueController extends Controller
             'capacity' => ['nullable', 'integer', 'min:1'],
             'size' => ['nullable', 'integer', 'min:1'],
             'type' => ['required', 'in:indoor,outdoor,indoor_outdoor'],
-            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'hero_image' => ['nullable', 'string', 'max:255'],
             'floor_plan' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,pdf', 'max:10240'],
             'virtual_tour_url' => ['nullable', 'url', 'max:500'],
             'facility_note' => ['nullable', 'string'],
@@ -51,9 +51,7 @@ class VenueController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        if ($request->hasFile('hero_image')) {
-            $validated['hero_image'] = $request->file('hero_image')->store('venues', 'public');
-        }
+        $validated['hero_image'] = blank($validated['hero_image'] ?? null) ? null : $validated['hero_image'];
         if ($request->hasFile('floor_plan')) {
             $validated['floor_plan'] = $request->file('floor_plan')->store('venues', 'public');
         }
@@ -82,7 +80,7 @@ class VenueController extends Controller
             'capacity' => ['nullable', 'integer', 'min:1'],
             'size' => ['nullable', 'integer', 'min:1'],
             'type' => ['required', 'in:indoor,outdoor,indoor_outdoor'],
-            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'hero_image' => ['nullable', 'string', 'max:255'],
             'floor_plan' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,pdf', 'max:10240'],
             'virtual_tour_url' => ['nullable', 'url', 'max:500'],
             'facility_note' => ['nullable', 'string'],
@@ -98,9 +96,7 @@ class VenueController extends Controller
             'meta_description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        if ($request->hasFile('hero_image')) {
-            $validated['hero_image'] = $request->file('hero_image')->store('venues', 'public');
-        }
+        $validated['hero_image'] = blank($validated['hero_image'] ?? null) ? null : $validated['hero_image'];
         if ($request->hasFile('floor_plan')) {
             $validated['floor_plan'] = $request->file('floor_plan')->store('venues', 'public');
         }
@@ -154,6 +150,7 @@ class VenueController extends Controller
         VenueFacility::create([
             'venue_id' => $venue->id,
             'name' => $validated['name'],
+            'sort_order' => $venue->facilities()->count(),
         ]);
 
         return back()->with('success', 'Fasilitas berhasil ditambahkan.');

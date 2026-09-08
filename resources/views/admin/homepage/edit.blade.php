@@ -49,10 +49,7 @@
                             </div>
 
                             <div>
-                                <label for="hero_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Gambar Hero</label>
-                                <input id="hero_image" type="file" name="hero_image" accept="image/jpeg,image/png,image/webp"
-                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
-                                <x-input-error :messages="$errors->get('hero_image')" class="mt-2" />
+                                <x-admin.media-picker name="hero_image" label="Ganti Gambar Hero" :value="$cv('hero_image')" />
                             </div>
 
                             <div class="sm:col-span-2">
@@ -99,9 +96,7 @@
                             </div>
 
                             <div>
-                                <label for="intro_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Gambar Intro</label>
-                                <input id="intro_image" type="file" name="intro_image" accept="image/jpeg,image/png,image/webp"
-                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
+                                <x-admin.media-picker name="intro_image" label="Ganti Gambar Intro" :value="$cv('intro_image')" />
                             </div>
 
                             <div class="sm:col-span-2">
