@@ -1,0 +1,306 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('Edit Venue') }} — {{ $venue->name }}</h2>
+        @include('admin.partials.admin-nav')
+    </x-slot>
+
+    <div class="py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            @include('admin.partials.flash')
+
+            <form method="POST" action="{{ route('admin.venues.update', $venue) }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <div class="space-y-6">
+                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Informasi Dasar</h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+                            <div class="sm:col-span-2">
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Venue</label>
+                                <input id="name" type="text" name="name" value="{{ old('name', $venue->name) }}" required
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Deskripsi</label>
+                                <textarea id="description" name="description" rows="4"
+                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('description', $venue->description) }}</textarea>
+                                <x-input-error :messages="$errors->get('description')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="capacity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Kapasitas</label>
+                                <input id="capacity" type="number" name="capacity" value="{{ old('capacity', $venue->capacity) }}" min="1"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('capacity')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luas (m²)</label>
+                                <input id="size" type="number" name="size" value="{{ old('size', $venue->size) }}" min="1"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('size')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipe Venue</label>
+                                <select id="type" name="type" required
+                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                    <option value="indoor" @selected(old('type', $venue->type) === 'indoor')>Indoor</option>
+                                    <option value="outdoor" @selected(old('type', $venue->type) === 'outdoor')>Outdoor</option>
+                                    <option value="indoor_outdoor" @selected(old('type', $venue->type) === 'indoor_outdoor')>Indoor & Outdoor</option>
+                                </select>
+                                <x-input-error :messages="$errors->get('type')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="virtual_tour_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL Virtual Tour</label>
+                                <input id="virtual_tour_url" type="url" name="virtual_tour_url" value="{{ old('virtual_tour_url', $venue->virtual_tour_url) }}"
+                                       placeholder="https://..."
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('virtual_tour_url')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="starting_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Harga Mulai Dari</label>
+                                <input id="starting_price" type="number" name="starting_price" value="{{ old('starting_price', $venue->starting_price) }}" step="0.01" min="0"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('starting_price')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Media yang Ada</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-6 p-6 sm:grid-cols-3">
+                            @if ($venue->hero_image)
+                                <div>
+                                    <img src="{{ asset('storage/' . $venue->hero_image) }}" alt="Foto utama" class="h-32 w-full rounded-lg object-cover">
+                                    <p class="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400">Foto Utama</p>
+                                </div>
+                            @endif
+                            @if ($venue->floor_plan)
+                                <div>
+                                    <img src="{{ asset('storage/' . $venue->floor_plan) }}" alt="Denah lantai"
+                                         class="h-32 w-full rounded-lg border border-gray-200 object-contain dark:border-gray-700">
+                                    <p class="mt-2 text-xs font-medium text-gray-500 dark:text-gray-400">Denah Lantai</p>
+                                </div>
+                            @endif
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Unggah file baru di bawah untuk mengganti.</span>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+                            <div>
+                                <label for="hero_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Foto Utama</label>
+                                <input id="hero_image" type="file" name="hero_image" accept="image/jpeg,image/png,image/webp"
+                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
+                                <x-input-error :messages="$errors->get('hero_image')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="floor_plan" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ganti Denah Lantai</label>
+                                <input id="floor_plan" type="file" name="floor_plan" accept="image/jpeg,image/png,image/webp,application/pdf"
+                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
+                                <x-input-error :messages="$errors->get('floor_plan')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Lokasi</h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+                            <div class="sm:col-span-2">
+                                <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat</label>
+                                <input id="address" type="text" name="address" value="{{ old('address', $venue->address) }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('address')" class="mt-2" />
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="google_maps_embed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Google Maps Embed URL</label>
+                                <input id="google_maps_embed" type="url" name="google_maps_embed" value="{{ old('google_maps_embed', $venue->google_maps_embed) }}"
+                                       placeholder="https://www.google.com/maps/embed?pb=..."
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('google_maps_embed')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Fasilitas & Layanan</h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3">
+                            <div>
+                                <label for="parking" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Parkir</label>
+                                <input id="parking" type="text" name="parking" value="{{ old('parking', $venue->parking) }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('parking')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="catering" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Katering</label>
+                                <input id="catering" type="text" name="catering" value="{{ old('catering', $venue->catering) }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('catering')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="decoration" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Dekorasi</label>
+                                <input id="decoration" type="text" name="decoration" value="{{ old('decoration', $venue->decoration) }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('decoration')" class="mt-2" />
+                            </div>
+
+                            <div class="sm:col-span-3">
+                                <label for="facility_note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Catatan Fasilitas</label>
+                                <textarea id="facility_note" name="facility_note" rows="3"
+                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('facility_note', $venue->facility_note) }}</textarea>
+                                <x-input-error :messages="$errors->get('facility_note')" class="mt-2" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">SEO & Publikasi</h3>
+                        </div>
+                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
+                            <div>
+                                <label for="meta_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
+                                <input id="meta_title" type="text" name="meta_title" value="{{ old('meta_title', $venue->meta_title) }}"
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                                <x-input-error :messages="$errors->get('meta_title')" class="mt-2" />
+                            </div>
+
+                            <div>
+                                <label for="meta_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
+                                <textarea id="meta_description" name="meta_description" rows="3"
+                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('meta_description', $venue->meta_description) }}</textarea>
+                                <x-input-error :messages="$errors->get('meta_description')" class="mt-2" />
+                            </div>
+
+                            <div class="flex items-center space-x-6 sm:col-span-2">
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="is_featured" value="1" @checked(old('is_featured', $venue->is_featured))
+                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Unggulan</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="is_active" value="1" @checked(old('is_active', $venue->is_active))
+                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Aktif</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-4">
+                        <a href="{{ route('admin.venues.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Batal</a>
+                        <button type="submit"
+                                class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Galeri Foto</h3>
+                </div>
+                <div class="p-6">
+                    <form method="POST" action="{{ route('admin.venues.images.store', $venue) }}" enctype="multipart/form-data"
+                          class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+                        @csrf
+                        <div>
+                            <label for="gallery_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tambah Foto</label>
+                            <input id="gallery_image" type="file" name="image" required accept="image/jpeg,image/png,image/webp"
+                                   class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
+                            <x-input-error :messages="$errors->get('image')" class="mt-2" />
+                        </div>
+                        <div>
+                            <label for="gallery_caption" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Keterangan</label>
+                            <input id="gallery_caption" type="text" name="caption"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                        </div>
+                        <button type="submit"
+                                class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
+                            Tambah
+                        </button>
+                    </form>
+
+                    @if ($venue->images->isEmpty())
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada foto galeri.</p>
+                    @else
+                        <div class="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                            @foreach ($venue->images as $image)
+                                <div class="rounded-lg border border-gray-200 p-2 dark:border-gray-700">
+                                    <img src="{{ asset('storage/' . $image->image) }}" alt="{{ $image->caption ?? 'Foto venue' }}"
+                                         class="h-28 w-full rounded-md object-cover">
+                                    @if ($image->caption)
+                                        <p class="mt-2 truncate text-xs text-gray-600 dark:text-gray-400">{{ $image->caption }}</p>
+                                    @endif
+                                    <form method="POST" action="{{ route('admin.venues.images.destroy', $image) }}"
+                                          onsubmit="return confirm('Hapus foto ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="mt-2 text-xs font-medium text-red-600 hover:text-red-500 dark:text-red-400">Hapus</button>
+                                    </form>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
+                <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Fasilitas</h3>
+                </div>
+                <div class="p-6">
+                    <form method="POST" action="{{ route('admin.venues.facilities.store', $venue) }}"
+                          class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto] sm:items-end">
+                        @csrf
+                        <div>
+                            <label for="facility_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Fasilitas</label>
+                            <input id="facility_name" type="text" name="name" required
+                                   placeholder="Contoh: Ruang Rias, Sound System, Lobby..."
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
+                            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                        </div>
+                        <button type="submit"
+                                class="inline-flex items-center justify-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
+                            Tambah
+                        </button>
+                    </form>
+
+                    @if ($venue->facilities->isEmpty())
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada fasilitas terdaftar.</p>
+                    @else
+                        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach ($venue->facilities as $facility)
+                                <li class="flex items-center justify-between py-3">
+                                    <span class="text-sm text-gray-900 dark:text-gray-100">{{ $facility->name }}</span>
+                                    <form method="POST" action="{{ route('admin.venues.facilities.destroy', $facility) }}"
+                                          onsubmit="return confirm('Hapus fasilitas ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-sm font-medium text-red-600 hover:text-red-500 dark:text-red-400">Hapus</button>
+                                    </form>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

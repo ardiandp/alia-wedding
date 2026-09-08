@@ -1,0 +1,1149 @@
+PRD — Wedding Venue & Wedding Organizer
+
+Platform: Web
+Backend: Laravel
+Database: MySQL
+Frontend: Blade + Tailwind CSS / Bootstrap
+Authentication: Laravel Breeze/Fortify
+Admin: Custom Admin Dashboard
+Storage: Local/S3-compatible storage
+Notification: WhatsApp + Email
+Maps: Google Maps
+SEO: Laravel SEO-friendly routing + metadata
+
+1. Product Overview
+
+Website digunakan oleh perusahaan yang menyediakan:
+
+Wedding Venue
+Wedding Organizer
+Wedding Package
+Decoration
+Catering
+Entertainment
+Documentation
+Wedding Planning
+
+Tujuan utama website:
+
+Menampilkan venue dan layanan secara premium serta mengubah pengunjung menjadi calon customer yang melakukan inquiry atau consultation.
+
+Target User
+
+Primary
+
+Calon pengantin
+Pasangan yang sedang mencari venue
+Wedding planner
+
+Secondary
+
+Event organizer
+Corporate/private event customer
+Vendor wedding
+2. Business Goal
+
+Website harus mampu:
+
+Meningkatkan brand awareness.
+Menampilkan venue secara menarik.
+Menampilkan wedding package.
+Mengumpulkan leads.
+Mempermudah customer melakukan konsultasi.
+Mempermudah admin mengelola inquiry.
+Menampilkan portfolio wedding.
+Menampilkan agenda/event.
+Mendukung SEO.
+Terintegrasi dengan WhatsApp.
+3. Sitemap
+/
+├── Home
+│
+├── Profile
+│   ├── About
+│   ├── Vision & Mission
+│   └── Team
+│
+├── Venue
+│   ├── Venue List
+│   └── Venue Detail
+│
+├── Wedding Package
+│   ├── Package List
+│   ├── Package Detail
+│   └── Package Builder
+│
+├── Agenda
+│   ├── Event List
+│   └── Event Detail
+│
+├── Gallery
+│   ├── All
+│   ├── Venue
+│   ├── Decoration
+│   ├── Wedding
+│   └── Real Wedding
+│
+├── Testimonial
+│
+├── Inspiration
+│   ├── Blog
+│   └── Article
+│
+└── Contact
+    ├── Contact Information
+    ├── Consultation Form
+    └── Location
+4. Homepage
+
+Homepage menjadi halaman utama marketing.
+
+Section
+4.1 Hero
+
+Data dinamis dari CMS:
+
+Background image/video
+Heading
+Description
+Primary CTA
+Secondary CTA
+
+Contoh:
+
+Your Dream Wedding Starts Here
+
+CTA:
+
+Explore Venue
+
+Consultation
+
+4.2 Introduction
+
+Menampilkan:
+
+Foto venue
+Short description
+Experience
+CTA
+4.3 Statistics
+
+Contoh:
+
+500+
+Happy Couples
+
+10+
+Years Experience
+
+50+
+Events Every Year
+
+20+
+Professional Vendors
+
+Data dapat dikelola admin.
+
+4.4 Venue Showcase
+
+Menampilkan 3–6 venue.
+
+Card:
+
+[Image]
+
+Grand Ballroom
+
+Capacity
+800 Guests
+
+[Explore Venue]
+4.5 Wedding Services
+Wedding Venue
+Wedding Organizer
+Decoration
+Catering
+Entertainment
+Documentation
+4.6 Wedding Package
+
+Menampilkan package unggulan.
+
+Silver
+Gold
+Platinum
+Custom
+
+CTA:
+
+View Package
+
+4.7 Real Wedding
+
+Menampilkan portfolio pasangan.
+
+[Photo]
+
+Sarah & Daniel
+
+Grand Ballroom
+12 August 2026
+
+[View Wedding]
+4.8 Gallery Preview
+
+Grid foto.
+
+CTA:
+
+View Full Gallery
+
+4.9 Testimonial
+
+Carousel:
+
+★★★★★
+
+"Beautiful venue and amazing service..."
+
+Sarah & Daniel
+4.10 Upcoming Agenda
+12
+SEP
+
+Wedding Expo
+
+Grand Ballroom
+
+[View Agenda]
+4.11 Promotion
+
+Contoh:
+
+Special Wedding Package
+
+Book your wedding this month and get a complimentary decoration upgrade.
+
+CTA:
+
+View Promotion
+
+4.12 Contact CTA
+
+Full-width CTA:
+
+Let's Create Your Perfect Wedding
+
+Button:
+
+Start Your Consultation
+
+5. Profile
+About
+
+Fields:
+
+Title
+Description
+Image
+Company history
+Vision
+Mission
+
+Mission menggunakan repeater:
+
+Mission 1
+Mission 2
+Mission 3
+Team
+
+Fields:
+
+Name
+Position
+Photo
+Description
+Social media
+6. Venue Module
+
+Ini salah satu modul paling penting.
+
+Venue List
+
+Filter:
+
+Capacity
+Indoor/Outdoor
+Venue Type
+
+Card:
+
+Image
+
+Grand Ballroom
+
+Capacity: 800
+Indoor
+
+Starting From
+Rp xxx.xxx.xxx
+
+[View Detail]
+Venue Detail
+
+Informasi:
+
+Hero image
+Gallery
+Description
+Capacity
+Size
+Indoor/outdoor
+Facilities
+Parking
+Catering
+Decoration
+Location
+Virtual tour
+Floor plan
+
+CTA:
+
+Check Availability
+
+dan:
+
+Request Consultation
+
+7. Wedding Package
+Package
+
+Fields:
+
+Name
+Slug
+Description
+Price
+Price Type
+Featured
+Status
+
+Price Type:
+
+Fixed
+Starting From
+Custom
+Package Items
+
+Relasi:
+
+Package
+    ↓
+Package Items
+
+Contoh:
+
+Gold Package
+
+✓ Venue
+✓ Catering
+✓ Decoration
+✓ Sound System
+✓ Entertainment
+✓ Wedding Organizer
+8. Package Builder
+
+Ini fitur optional tetapi sangat direkomendasikan.
+
+User memilih:
+
+Wedding Type
+Modern
+Traditional
+International
+Intimate
+Guest
+100
+300
+500
+800+
+Venue
+
+User memilih venue.
+
+Decoration
+Classic
+Elegant
+Modern
+Luxury
+Additional Services
+Catering
+Decoration
+Photography
+Videography
+MC
+Entertainment
+Makeup
+Wedding Organizer
+
+Kemudian sistem menghitung estimasi.
+
+Estimated Package
+
+Rp 125.000.000
+
+[Request Consultation]
+
+Catatan: estimator tidak harus dianggap sebagai harga final. Admin dapat menentukan formula harga dan disclaimer.
+
+9. Agenda Module
+
+Digunakan untuk:
+
+Wedding
+Open House
+Wedding Expo
+Venue Tour
+Food Testing
+Promotion
+
+Data:
+
+Title
+Slug
+Event Type
+Description
+Start Date
+End Date
+Start Time
+End Time
+Venue
+Image
+Status
+
+Status:
+
+Draft
+Published
+Completed
+Cancelled
+10. Gallery
+
+Kategori:
+
+Venue
+Wedding
+Decoration
+Reception
+Bride & Groom
+Table Setting
+Garden
+Real Wedding
+
+Data:
+
+Title
+Category
+Image
+Description
+Wedding ID
+Sort Order
+Status
+11. Real Wedding
+
+Saya sarankan dibuat sebagai module khusus.
+
+Contoh:
+
+Dina & Andi
+
+Wedding Date
+20 September 2026
+
+Venue
+Grand Ballroom
+
+Theme
+Elegant Modern
+
+Guest
+500
+
+Gallery
+[Photos]
+
+Dengan begitu portfolio bisa menjadi landing page tersendiri.
+
+12. Testimonial
+
+Fields:
+
+Customer Name
+Partner Name
+Photo
+Rating
+Testimonial
+Wedding Date
+Venue
+Featured
+Status
+
+Frontend:
+
+★★★★★
+
+"Everything was beautifully arranged..."
+
+Sarah & Daniel
+Grand Ballroom
+13. Blog / Inspiration
+
+Untuk SEO.
+
+Category:
+
+Wedding Planning
+Wedding Decoration
+Wedding Venue
+Wedding Tips
+Inspiration
+Real Wedding
+
+Article:
+
+Title
+Slug
+Excerpt
+Content
+Featured Image
+Category
+Author
+Published At
+SEO Title
+SEO Description
+SEO Keywords
+Status
+14. Contact & Consultation
+
+Form:
+
+Full Name *
+Partner Name
+
+Email *
+
+WhatsApp *
+
+Wedding Date *
+
+Estimated Guests *
+
+Preferred Venue
+
+Wedding Style
+
+Budget Range
+
+Services Needed
+
+Message
+
+Setelah submit:
+
+Thank you!
+
+Our wedding consultant will contact you shortly.
+
+Admin mendapatkan:
+
+New Consultation Request
+
+15. Lead Management
+
+Ini penting untuk backend.
+
+Status:
+
+New
+Contacted
+Consultation
+Proposal Sent
+Negotiation
+Confirmed
+Completed
+Cancelled
+
+Admin dapat melihat:
+
+Customer
+Wedding Date
+Venue
+Guests
+Budget
+Status
+Assigned Staff
+Last Contact
+16. WhatsApp Integration
+
+Button:
+
+Chat with Wedding Consultant
+
+Dynamic message:
+
+Hi, I am interested in your wedding venue.
+
+Wedding Date:
+Preferred Venue:
+Estimated Guests:
+
+Selain floating WhatsApp, setiap venue/package juga mempunyai CTA WhatsApp.
+
+17. Admin Dashboard
+
+Dashboard:
+
+--------------------------------
+Wedding Dashboard
+--------------------------------
+
+New Leads          24
+
+Consultations      12
+
+Upcoming Events     8
+
+Confirmed Wedding   6
+
+--------------------------------
+
+Recent Leads
+
+Sarah
+Dina
+Michael
+Andi
+
+--------------------------------
+
+Upcoming Wedding
+
+12 Sep
+18 Sep
+25 Sep
+18. Admin Menu
+Dashboard
+
+Content
+├── Homepage
+├── About
+├── Vision Mission
+├── Services
+├── Team
+
+Venue
+├── Venues
+├── Facilities
+
+Package
+├── Packages
+├── Package Items
+├── Package Builder
+
+Event
+├── Agenda
+
+Portfolio
+├── Gallery
+├── Real Wedding
+├── Testimonial
+
+Marketing
+├── Promotion
+├── Blog
+├── FAQ
+
+CRM
+├── Leads
+├── Consultation
+├── Booking
+
+Settings
+├── General
+├── SEO
+├── Social Media
+├── WhatsApp
+├── Email
+├── Google Maps
+
+Users
+├── Admin
+├── Staff
+19. Database Design
+
+Struktur database awal yang saya rekomendasikan:
+
+users
+
+venues
+venue_facilities
+venue_images
+
+services
+
+packages
+package_items
+
+package_builder_options
+package_builder_values
+
+events
+
+galleries
+gallery_categories
+
+real_weddings
+real_wedding_images
+
+testimonials
+
+blog_categories
+posts
+
+faqs
+
+promotions
+
+leads
+lead_services
+lead_notes
+
+consultations
+
+bookings
+
+settings
+
+seo_metadata
+20. Relasi Database Utama
+
+Gambaran sederhananya:
+
+users
+  │
+  ├── leads
+  │
+  ├── consultations
+  │
+  └── bookings
+
+
+venues
+  │
+  ├── venue_images
+  ├── venue_facilities
+  ├── packages
+  ├── events
+  └── bookings
+
+
+packages
+  │
+  └── package_items
+
+
+real_weddings
+  │
+  └── real_wedding_images
+
+
+blog_categories
+  │
+  └── posts
+
+
+leads
+  │
+  ├── lead_services
+  ├── lead_notes
+  ├── consultations
+  └── bookings
+21. Booking Flow
+
+Flow customer:
+
+Visitor
+   ↓
+Browse Website
+   ↓
+View Venue
+   ↓
+View Package
+   ↓
+Check Availability
+   ↓
+Consultation Form
+   ↓
+Lead Created
+   ↓
+Admin Contact Customer
+   ↓
+Consultation
+   ↓
+Proposal
+   ↓
+Negotiation
+   ↓
+Booking Confirmed
+22. User Roles
+
+Minimal:
+
+Super Admin
+
+Full access.
+
+Admin
+
+Manage:
+
+Content
+Venue
+Package
+Gallery
+Leads
+Agenda
+Staff / Sales
+
+Manage:
+
+Leads
+Consultation
+Proposal
+Booking
+
+Dengan Laravel Policies/Gates, setiap role bisa memiliki permission berbeda.
+
+23. Laravel Architecture
+
+Saya rekomendasikan:
+
+Laravel
+├── Models
+├── Controllers
+├── Requests
+├── Services
+├── Policies
+├── Events
+├── Notifications
+├── Jobs
+└── Mail
+
+Untuk frontend:
+
+resources/
+├── views/
+│   ├── layouts/
+│   ├── components/
+│   ├── home/
+│   ├── venue/
+│   ├── package/
+│   ├── gallery/
+│   ├── agenda/
+│   ├── blog/
+│   └── contact/
+│
+└── css/
+24. API / AJAX
+
+Walaupun frontend awal menggunakan Blade, saya sarankan beberapa fitur dibuat asynchronous:
+
+GET  /api/venues
+GET  /api/packages
+GET  /api/events
+GET  /api/gallery
+
+POST /api/consultation
+POST /api/package-estimator
+
+GET /api/venue/{venue}/availability
+
+Ini akan memudahkan jika nanti dibuat:
+
+Mobile app
+React frontend
+Flutter app
+Customer portal
+25. SEO
+
+Setiap entity harus mempunyai:
+
+slug
+meta_title
+meta_description
+og_image
+canonical_url
+
+Contoh:
+
+/wedding-venue/jakarta/grand-ballroom
+/wedding-package/gold-package
+/real-wedding/dina-and-andi
+/blog/how-to-choose-wedding-venue
+
+Tambahkan:
+
+Sitemap.xml
+Robots.txt
+Open Graph
+Twitter Card
+Schema.org
+Breadcrumb
+JSON-LD
+26. Security
+
+Laravel harus menggunakan:
+
+CSRF Protection
+Form Request Validation
+Authentication
+Authorization
+Rate Limiting
+XSS protection
+SQL Injection protection melalui Eloquent
+Secure file upload
+MIME validation
+Image size limitation
+Activity log
+Backup database
+
+Untuk upload gambar, jangan hanya validasi extension. Validasi MIME dan ukuran file.
+
+27. Performance
+
+Karena website akan banyak foto/video, ini penting.
+
+Gunakan:
+
+WebP/AVIF
+Lazy loading
+Responsive image
+Image thumbnail
+CDN
+Browser caching
+Database indexing
+Query eager loading
+Laravel Cache
+
+Video hero sebaiknya tidak langsung memakai file video super besar. Gunakan compressed video dan fallback image.
+
+28. Mobile
+
+Website harus mobile-first.
+
+Karena kemungkinan besar calon pengantin datang dari Instagram/TikTok/Google menggunakan HP.
+
+Mobile harus memiliki:
+
+[Logo]
+
+Menu
+
+[Consultation]
+
+----------------
+
+Floating WhatsApp
+
+----------------
+
+Bottom CTA
+
+[Check Availability]
+29. Fitur Premium yang Bisa Ditambahkan
+
+Kalau ingin website benar-benar terlihat premium, saya akan menambahkan:
+
+⭐ Availability Calendar
+
+Customer bisa melihat:
+
+September 2026
+
+12  Available
+13  Booked
+14  Available
+15  Available
+
+Tidak perlu menampilkan detail customer.
+
+⭐ Virtual Tour
+
+360° venue.
+
+⭐ Wedding Budget Calculator
+
+Customer memasukkan:
+
+Guests: 500
+Venue: Grand Ballroom
+Decoration: Elegant
+Catering: Premium
+Documentation: Yes
+Entertainment: Yes
+
+Output:
+
+Estimated Budget: Rp xxx.xxx.xxx
+
+⭐ Download Wedding Brochure
+
+Customer mengisi email/WhatsApp → mendapatkan PDF package.
+
+Ini bagus untuk lead generation.
+
+⭐ Instagram Integration
+
+Menampilkan:
+
+@yourweddingvenue
+
+⭐ Google Review Integration
+
+Menampilkan review Google secara otomatis jika API/integrasi tersedia.
+
+30. MVP vs Phase 2
+
+Saya tidak menyarankan langsung membuat semua fitur.
+
+Phase 1 — MVP
+
+Wajib:
+
+Home
+Profile
+Venue
+Package
+Gallery
+Agenda
+Testimonial
+Contact
+Consultation
+WhatsApp
+Admin CMS
+SEO
+Responsive design
+Phase 2
+
+Tambahkan:
+
+Package Builder
+Availability Calendar
+Promotion
+Blog
+Real Wedding
+CRM
+Booking Management
+Phase 3
+
+Fitur advanced:
+
+Online booking
+Online payment
+Customer dashboard
+Digital proposal
+E-contract
+Invoice
+Payment tracking
+Vendor management
+Wedding checklist
+Guest management
+31. Rekomendasi Teknologi
+
+Untuk project baru saya akan menggunakan:
+
+Backend
+Laravel
+
+Language
+PHP 8.3+
+
+Database
+MySQL 8+
+
+Frontend
+Blade
+Tailwind CSS
+
+Javascript
+Alpine.js
+
+Authentication
+Laravel Breeze
+
+Storage
+Laravel Filesystem
+
+Queue
+Redis
+
+Cache
+Redis
+
+Web Server
+Nginx
+
+Server
+Ubuntu Linux
+
+SSL
+Let's Encrypt
+
+Email
+SMTP / Mail provider
+
+WhatsApp
+WhatsApp link/API
+
+Kalau ingin lebih sederhana untuk tahap awal:
+
+Laravel
++
+Blade
++
+Tailwind
++
+Alpine.js
++
+MySQL
+
+sudah sangat cukup.
+
+Arsitektur akhirnya
+
+Saya akan membangun sistemnya seperti ini:
+
+                    WEBSITE
+                       │
+        ┌──────────────┴──────────────┐
+        │                             │
+     FRONTEND                      ADMIN
+        │                             │
+   ┌────┴────┐                  ┌─────┴─────┐
+   │         │                  │           │
+ Landing   Content             CMS         CRM
+   │         │                  │           │
+   └────┬────┘                  └─────┬─────┘
+        │                             │
+        └─────────────┬───────────────┘
+                      │
+                   LARAVEL
+                      │
+             ┌────────┴────────┐
+             │                 │
+           MYSQL             STORAGE
+             │                 │
+        Venue/Package       Images
+        Leads/Booking       Videos
+        Gallery/Blog
