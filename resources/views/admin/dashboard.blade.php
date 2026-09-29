@@ -1,124 +1,163 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard Admin') }}
-        </h2>
+<x-admin-layout title="Dashboard">
+    <x-admin.page-header title="Dashboard"
+                          subtitle="Ringkasan prospek, agenda, dan aktivitas terbaru">
+        <x-slot:actions>
+            <x-admin.button :href="route('admin.leads.index')" variant="secondary" icon="target">
+                Kelola Prospek
+            </x-admin.button>
+        </x-slot:actions>
+    </x-admin.page-header>
 
-        @include('admin.partials.admin-nav')
-    </x-slot>
+    <div class="space-y-5">
+        <!-- Stats -->
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <x-admin.stat label="Prospek Baru"
+                          :value="$newLeadsCount"
+                          icon="inbox"
+                          tone="amber"
+                          :href="route('admin.leads.index', ['status' => 'new'])" />
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @include('admin.partials.flash')
+            <x-admin.stat label="Dalam Konsultasi"
+                          :value="$consultationCount"
+                          icon="chat"
+                          tone="blue"
+                          :href="route('admin.leads.index', ['status' => 'consultation'])" />
 
-            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <a href="{{ route('admin.leads.index', ['status' => 'new']) }}"
-                   class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:shadow dark:bg-gray-800 dark:ring-gray-700">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Prospek Baru</p>
-                    <p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">{{ $newLeadsCount }}</p>
-                </a>
+            <x-admin.stat label="Pernikahan Terkonfirmasi"
+                          :value="$confirmedCount"
+                          icon="check"
+                          tone="green"
+                          :href="route('admin.leads.index', ['status' => 'confirmed'])" />
 
-                <a href="{{ route('admin.leads.index', ['status' => 'consultation']) }}"
-                   class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:shadow dark:bg-gray-800 dark:ring-gray-700">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Dalam Konsultasi</p>
-                    <p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">{{ $consultationCount }}</p>
-                </a>
+            <x-admin.stat label="Agenda Mendatang"
+                          :value="$upcomingEventsCount"
+                          icon="calendar"
+                          tone="purple"
+                          :href="route('admin.events.index')" />
+        </div>
 
-                <a href="{{ route('admin.leads.index', ['status' => 'confirmed']) }}"
-                   class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:shadow dark:bg-gray-800 dark:ring-gray-700">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Pernikahan Terkonfirmasi</p>
-                    <p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">{{ $confirmedCount }}</p>
-                </a>
+        <!-- Recent leads -->
+        <x-admin.card title="Prospek Terbaru" subtitle="5 prospek terakhir yang masuk.">
+            <x-slot:actions>
+                <x-admin.button :href="route('admin.leads.index')" variant="ghost" icon="arrow-right">
+                    Lihat Semua
+                </x-admin.button>
+            </x-slot:actions>
 
-                <a href="{{ route('admin.events.index') }}"
-                   class="rounded-lg bg-white p-6 shadow-sm ring-1 ring-gray-200 transition hover:shadow dark:bg-gray-800 dark:ring-gray-700">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Agenda Mendatang</p>
-                    <p class="mt-2 text-3xl font-semibold text-gray-900 dark:text-gray-100">{{ $upcomingEventsCount }}</p>
-                </a>
-            </div>
+            <x-admin.table>
+                <x-slot:head>
+                    <x-admin.th>Nama</x-admin.th>
+                    <x-admin.th>WhatsApp</x-admin.th>
+                    <x-admin.th>Tanggal Pernikahan</x-admin.th>
+                    <x-admin.th>Status</x-admin.th>
+                    <x-admin.th>Ditugaskan ke</x-admin.th>
+                    <x-admin.th class="!text-right">Aksi</x-admin.th>
+                </x-slot:head>
 
-            <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                    <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Prospek Terbaru</h3>
-                    <a href="{{ route('admin.leads.index') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Lihat Semua</a>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-900/40">
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">WhatsApp</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Tanggal Pernikahan</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Ditugaskan ke</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @forelse ($recentLeads as $lead)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40">
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {{ $lead->full_name }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $lead->whatsapp }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                                        {{ $lead->wedding_date ? $lead->wedding_date->format('d M Y') : '—' }}
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4">
-                                        <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium {{ $lead->status === 'new' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' : ($lead->status === 'confirmed' || $lead->status === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300') }}">
-                                            {{ Str::title(str_replace('_', ' ', $lead->status)) }}
-                                        </span>
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $lead->assignedTo?->name ?? 'Belum ada' }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">Belum ada prospek.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+                    @forelse ($recentLeads as $lead)
+                        @php
+                            $statusTone = match ($lead->status) {
+                                'new' => 'amber',
+                                'consultation' => 'blue',
+                                'confirmed', 'completed' => 'green',
+                                'cancelled' => 'red',
+                                default => 'gray',
+                            };
+                        @endphp
 
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                        <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Pernikahan Mendatang</h3>
-                    </div>
-                    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse ($upcomingWeddings as $lead)
-                            <li class="flex items-center justify-between px-6 py-4">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $lead->full_name }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $lead->venue?->name ?? 'Venue belum ditentukan' }}</p>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $lead->wedding_date->format('d M Y') }}</p>
-                            </li>
-                        @empty
-                            <li class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">Tidak ada pernikahan yang dijadwalkan.</li>
-                        @endforelse
-                    </ul>
-                </div>
+                        <tr class="transition hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                            <x-admin.td class="!font-medium !text-gray-900 dark:!text-white">
+                                {{ $lead->full_name }}
+                            </x-admin.td>
 
-                <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                        <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Konsultasi Mendatang</h3>
-                    </div>
-                    <ul class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse ($upcomingConsultations as $consultation)
-                            <li class="flex items-center justify-between px-6 py-4">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $consultation->lead?->full_name ?? 'Tanpa lead' }}</p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">{{ $consultation->lead?->venue?->name ?? 'Venue belum ditentukan' }}</p>
-                                </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $consultation->scheduled_at->format('d M Y') }}{{ $consultation->scheduled_time ? ' · ' . $consultation->scheduled_time : '' }}</p>
-                            </li>
-                        @empty
-                            <li class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">Tidak ada konsultasi yang dijadwalkan.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div>
+                            <x-admin.td>{{ $lead->whatsapp }}</x-admin.td>
+
+                            <x-admin.td>{{ $lead->wedding_date?->format('d M Y') ?? '—' }}</x-admin.td>
+
+                            <x-admin.td>
+                                <x-admin.badge :tone="$statusTone">
+                                    {{ Str::title(str_replace('_', ' ', $lead->status)) }}
+                                </x-admin.badge>
+                            </x-admin.td>
+
+                            <x-admin.td>{{ $lead->assignedTo?->name ?? 'Belum ada' }}</x-admin.td>
+
+                            <x-admin.td class="!text-right">
+                                <x-admin.button :href="route('admin.leads.show', $lead)" variant="secondary" icon="eye">
+                                    Detail
+                                </x-admin.button>
+                            </x-admin.td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6">
+                                <x-admin.empty title="Belum ada prospek"
+                                               description="Prospek dari form kontak akan muncul di sini.">
+                                    <x-slot:action>
+                                        <x-admin.button :href="route('admin.leads.index')" variant="secondary" icon="target">
+                                            Buka CRM
+                                        </x-admin.button>
+                                    </x-slot:action>
+                                </x-admin.empty>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </x-admin.table>
+        </x-admin.card>
+
+        <!-- Upcoming -->
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-2">
+            <x-admin.card title="Pernikahan Mendatang">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-800">
+                    @forelse ($upcomingWeddings as $lead)
+                        <li class="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-medium text-gray-900 dark:text-white">{{ $lead->full_name }}</p>
+                                <p class="truncate text-sm text-gray-500 dark:text-gray-400">{{ $lead->venue?->name ?? 'Venue belum ditentukan' }}</p>
+                            </div>
+
+                            <span class="shrink-0 text-sm font-medium text-gray-600 dark:text-gray-300">
+                                {{ $lead->wedding_date->format('d M Y') }}
+                            </span>
+                        </li>
+                    @empty
+                        <li>
+                            <x-admin.empty title="Belum ada pernikahan terjadwal"
+                                           description="Jadwal pernikahan terkonfirmasi akan tampil di sini."
+                                           icon="calendar" />
+                        </li>
+                    @endforelse
+                </ul>
+            </x-admin.card>
+
+            <x-admin.card title="Konsultasi Mendatang">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-800">
+                    @forelse ($upcomingConsultations as $consultation)
+                        <li class="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ $consultation->lead?->full_name ?? 'Tanpa prospek' }}
+                                </p>
+                                <p class="truncate text-sm text-gray-500 dark:text-gray-400">
+                                    {{ $consultation->lead?->venue?->name ?? 'Venue belum ditentukan' }}
+                                </p>
+                            </div>
+
+                            <span class="shrink-0 text-sm font-medium text-gray-600 dark:text-gray-300">
+                                {{ $consultation->scheduled_at->format('d M Y') }}{{ $consultation->scheduled_time ? ' · '.$consultation->scheduled_time : '' }}
+                            </span>
+                        </li>
+                    @empty
+                        <li>
+                            <x-admin.empty title="Belum ada konsultasi terjadwal"
+                                           description="Jadwal konsultasi berikutnya akan tampil di sini."
+                                           icon="chat" />
+                        </li>
+                    @endforelse
+                </ul>
+            </x-admin.card>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

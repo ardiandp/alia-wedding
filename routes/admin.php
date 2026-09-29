@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VenueController;
 use Illuminate\Support\Facades\Route;
 
@@ -64,5 +65,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff']
 
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
+        Route::resource('users', UserController::class)->except(['show']);
     });
 });

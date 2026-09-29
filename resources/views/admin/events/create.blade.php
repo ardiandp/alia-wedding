@@ -1,138 +1,111 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('Tambah Agenda') }}</h2>
-        @include('admin.partials.admin-nav')
-    </x-slot>
+<x-admin-layout title="Tambah Agenda">
+    <x-admin.page-header title="Tambah Agenda"
+                          subtitle="Buat agenda untuk mengelola event Anda"
+                          :back="route('admin.events.index')" />
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @include('admin.partials.flash')
+    <form method="POST" action="{{ route('admin.events.store') }}" enctype="multipart/form-data" class="max-w-5xl space-y-5">
+        @csrf
 
-            <form method="POST" action="{{ route('admin.events.store') }}" enctype="multipart/form-data">
-                @csrf
-
-                <div class="space-y-6">
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Informasi Agenda</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div>
-                                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Judul Agenda</label>
-                                <input id="title" type="text" name="title" value="{{ old('title') }}" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="event_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipe Agenda</label>
-                                <select id="event_type" name="event_type" required
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                    <option value="wedding" @selected(old('event_type') === 'wedding')>Pernikahan</option>
-                                    <option value="open_house" @selected(old('event_type') === 'open_house')>Open House</option>
-                                    <option value="expo" @selected(old('event_type') === 'expo')>Expo</option>
-                                    <option value="venue_tour" @selected(old('event_type') === 'venue_tour')>Tur Venue</option>
-                                    <option value="food_testing" @selected(old('event_type') === 'food_testing')>Food Testing</option>
-                                    <option value="promotion" @selected(old('event_type') === 'promotion')>Promosi</option>
-                                </select>
-                                <x-input-error :messages="$errors->get('event_type')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="venue_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Venue</label>
-                                <select id="venue_id" name="venue_id"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                    <option value="">Tanpa venue</option>
-                                    @foreach ($venues as $venue)
-                                        <option value="{{ $venue->id }}" @selected(old('venue_id') == $venue->id)>{{ $venue->name }}</option>
-                                    @endforeach
-                                </select>
-                                <x-input-error :messages="$errors->get('venue_id')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
-                                <select id="status" name="status" required
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                    <option value="draft" @selected(old('status') === 'draft')>Draf</option>
-                                    <option value="published" @selected(old('status') === 'published')>Terbit</option>
-                                    <option value="completed" @selected(old('status') === 'completed')>Selesai</option>
-                                    <option value="cancelled" @selected(old('status') === 'cancelled')>Dibatalkan</option>
-                                </select>
-                                <x-input-error :messages="$errors->get('status')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Deskripsi</label>
-                                <textarea id="description" name="description" rows="4"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('description') }}</textarea>
-                                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="start_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Mulai</label>
-                                <input id="start_date" type="date" name="start_date" value="{{ old('start_date') }}" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('start_date')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="end_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tanggal Selesai</label>
-                                <input id="end_date" type="date" name="end_date" value="{{ old('end_date') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="start_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jam Mulai</label>
-                                <input id="start_time" type="time" name="start_time" value="{{ old('start_time') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('start_time')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="end_time" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Jam Selesai</label>
-                                <input id="end_time" type="time" name="end_time" value="{{ old('end_time') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('end_time')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <x-admin.media-picker name="image" label="Gambar Agenda" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">SEO</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div>
-                                <label for="meta_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
-                                <input id="meta_title" type="text" name="meta_title" value="{{ old('meta_title') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('meta_title')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="meta_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
-                                <textarea id="meta_description" name="meta_description" rows="3"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('meta_description') }}</textarea>
-                                <x-input-error :messages="$errors->get('meta_description')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end space-x-4">
-                        <a href="{{ route('admin.events.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Batal</a>
-                        <button type="submit"
-                                class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
-                            Simpan Agenda
-                        </button>
-                    </div>
+        <x-admin.card title="Informasi Agenda">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                    <x-admin.label for="title" required>Judul Agenda</x-admin.label>
+                    <x-admin.input id="title" name="title" :value="old('title')" required />
+                    <x-admin.error name="title" />
                 </div>
-            </form>
+
+                <div>
+                    <x-admin.label for="event_type" required>Tipe Agenda</x-admin.label>
+                    <x-admin.select id="event_type" name="event_type" required>
+                        <option value="wedding" @selected(old('event_type') === 'wedding')>Pernikahan</option>
+                        <option value="open_house" @selected(old('event_type') === 'open_house')>Open House</option>
+                        <option value="expo" @selected(old('event_type') === 'expo')>Expo</option>
+                        <option value="venue_tour" @selected(old('event_type') === 'venue_tour')>Tur Venue</option>
+                        <option value="food_testing" @selected(old('event_type') === 'food_testing')>Food Testing</option>
+                        <option value="promotion" @selected(old('event_type') === 'promotion')>Promosi</option>
+                    </x-admin.select>
+                    <x-admin.error name="event_type" />
+                </div>
+
+                <div>
+                    <x-admin.label for="venue_id">Venue</x-admin.label>
+                    <x-admin.select id="venue_id" name="venue_id">
+                        <option value="">Tanpa venue</option>
+                        @foreach ($venues as $venue)
+                            <option value="{{ $venue->id }}" @selected(old('venue_id') == $venue->id)>{{ $venue->name }}</option>
+                        @endforeach
+                    </x-admin.select>
+                    <x-admin.error name="venue_id" />
+                </div>
+
+                <div>
+                    <x-admin.label for="status" required>Status</x-admin.label>
+                    <x-admin.select id="status" name="status" required>
+                        <option value="draft" @selected(old('status') === 'draft')>Draf</option>
+                        <option value="published" @selected(old('status') === 'published')>Terbit</option>
+                        <option value="completed" @selected(old('status') === 'completed')>Selesai</option>
+                        <option value="cancelled" @selected(old('status') === 'cancelled')>Dibatalkan</option>
+                    </x-admin.select>
+                    <x-admin.error name="status" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="description">Deskripsi</x-admin.label>
+                    <x-admin.textarea id="description" name="description" rows="4" :value="old('description')" />
+                    <x-admin.error name="description" />
+                </div>
+
+                <div>
+                    <x-admin.label for="start_date" required>Tanggal Mulai</x-admin.label>
+                    <x-admin.input id="start_date" name="start_date" type="date" :value="old('start_date')" required />
+                    <x-admin.error name="start_date" />
+                </div>
+
+                <div>
+                    <x-admin.label for="end_date">Tanggal Selesai</x-admin.label>
+                    <x-admin.input id="end_date" name="end_date" type="date" :value="old('end_date')" />
+                    <x-admin.error name="end_date" />
+                </div>
+
+                <div>
+                    <x-admin.label for="start_time">Jam Mulai</x-admin.label>
+                    <x-admin.input id="start_time" name="start_time" type="time" :value="old('start_time')" />
+                    <x-admin.error name="start_time" />
+                </div>
+
+                <div>
+                    <x-admin.label for="end_time">Jam Selesai</x-admin.label>
+                    <x-admin.input id="end_time" name="end_time" type="time" :value="old('end_time')" />
+                    <x-admin.error name="end_time" />
+                </div>
+
+                <div>
+                    <x-admin.label for="image">Gambar Agenda</x-admin.label>
+                    <x-admin.media-picker name="image" label="Gambar Agenda" />
+                    <x-admin.error name="image" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <x-admin.card title="SEO">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                    <x-admin.label for="meta_title">Meta Title</x-admin.label>
+                    <x-admin.input id="meta_title" name="meta_title" :value="old('meta_title')" />
+                    <x-admin.error name="meta_title" />
+                </div>
+
+                <div>
+                    <x-admin.label for="meta_description">Meta Description</x-admin.label>
+                    <x-admin.textarea id="meta_description" name="meta_description" rows="3" :value="old('meta_description')" />
+                    <x-admin.error name="meta_description" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <div class="flex items-center gap-3">
+            <x-admin.button type="submit" icon="check">Simpan Agenda</x-admin.button>
+            <x-admin.button :href="route('admin.events.index')" variant="secondary">Batal</x-admin.button>
         </div>
-    </div>
-</x-app-layout>
+    </form>
+</x-admin-layout>

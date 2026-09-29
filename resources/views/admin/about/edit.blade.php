@@ -3,97 +3,76 @@
     $old = fn ($key) => old($key, $about?->$key ?? '');
 @endphp
 
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('Edit Halaman Tentang') }}</h2>
-        @include('admin.partials.admin-nav')
-    </x-slot>
+<x-admin-layout title="Tentang">
+    <x-admin.page-header title="Edit Halaman Tentang"
+                          subtitle="Kelola konten halaman profil dan sejarah perusahaan"
+                          :back="route('admin.dashboard')" />
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @include('admin.partials.flash')
+    <form method="POST" action="{{ route('admin.about.update') }}" enctype="multipart/form-data" class="max-w-5xl space-y-5">
+        @csrf
+        @method('PUT')
 
-            <form method="POST" action="{{ route('admin.about.update') }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                <div class="space-y-6">
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Konten Utama</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div>
-                                <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Judul</label>
-                                <input id="title" type="text" name="title" value="{{ $old('title') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('title')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <x-admin.media-picker name="image" label="Ganti Gambar" :value="$about?->image" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Deskripsi</label>
-                                <textarea id="description" name="description" rows="4"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ $old('description') }}</textarea>
-                                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="company_history" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Riwayat Perusahaan</label>
-                                <textarea id="company_history" name="company_history" rows="5"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ $old('company_history') }}</textarea>
-                                <x-input-error :messages="$errors->get('company_history')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="vision" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Visi</label>
-                                <textarea id="vision" name="vision" rows="3"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ $old('vision') }}</textarea>
-                                <x-input-error :messages="$errors->get('vision')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Misi Perusahaan</h3>
-                        </div>
-                        <div class="p-6">
-                            <div x-data="{ missions: {{ Js::from($missions) }} }">
-                                <div class="space-y-3">
-                                    <template x-for="(mission, index) in missions" :key="index">
-                                        <div class="flex items-center gap-3">
-                                            <input type="text" name="missions[]" x-model="missions[index]"
-                                                   placeholder="Tulis misi perusahaan..."
-                                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                            <button type="button" @click="missions.splice(index, 1)"
-                                                    class="inline-flex shrink-0 items-center rounded-md border border-red-200 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20">
-                                                Hapus
-                                            </button>
-                                        </div>
-                                    </template>
-                                </div>
-                                <button type="button" @click="missions.push('')"
-                                        class="mt-4 inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 transition hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
-                                    Tambah Misi
-                                </button>
-                                <x-input-error :messages="$errors->get('missions')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end space-x-4">
-                        <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Batal</a>
-                        <button type="submit"
-                                class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
-                            Simpan Perubahan
-                        </button>
-                    </div>
+        <x-admin.card title="Konten Utama">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <x-admin.label for="title">Judul</x-admin.label>
+                    <x-admin.input id="title" name="title" :value="$old('title')" />
+                    <x-admin.error name="title" />
                 </div>
-            </form>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="image">Gambar</x-admin.label>
+                    <x-admin.media-picker name="image" label="Ganti Gambar" :value="$about?->image" />
+                    <x-admin.error name="image" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="description">Deskripsi</x-admin.label>
+                    <x-admin.textarea id="description" name="description" rows="4" :value="$old('description')" />
+                    <x-admin.error name="description" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="company_history">Riwayat Perusahaan</x-admin.label>
+                    <x-admin.textarea id="company_history" name="company_history" rows="5" :value="$old('company_history')" />
+                    <x-admin.error name="company_history" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="vision">Visi</x-admin.label>
+                    <x-admin.textarea id="vision" name="vision" rows="3" :value="$old('vision')" />
+                    <x-admin.error name="vision" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <x-admin.card title="Misi Perusahaan">
+            <div x-data="{ missions: {{ Js::from($missions) }} }">
+                <div class="space-y-3">
+                    <template x-for="(mission, index) in missions" :key="index">
+                        <div class="flex items-center gap-3">
+                            <input type="text" name="missions[]" x-model="missions[index]"
+                                   placeholder="Tulis misi perusahaan..."
+                                   class="block w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:bg-white/[0.03] dark:text-white dark:placeholder:text-gray-500">
+
+                            <button type="button" @click="missions.splice(index, 1)"
+                                    class="inline-flex shrink-0 items-center rounded-xl border border-red-200 px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-500/40 dark:text-red-400 dark:hover:bg-red-500/10">
+                                Hapus
+                            </button>
+                        </div>
+                    </template>
+                </div>
+
+                <x-admin.button type="button" variant="secondary" icon="plus" class="mt-4"
+                                @click="missions.push('')">Tambah Misi</x-admin.button>
+
+                <x-admin.error name="missions" />
+            </div>
+        </x-admin.card>
+
+        <div class="flex items-center gap-3">
+            <x-admin.button type="submit" icon="check">Simpan Perubahan</x-admin.button>
+            <x-admin.button :href="route('admin.dashboard')" variant="secondary">Batal</x-admin.button>
         </div>
-    </div>
-</x-app-layout>
+    </form>
+</x-admin-layout>

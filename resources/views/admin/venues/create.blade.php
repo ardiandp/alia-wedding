@@ -1,189 +1,145 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('Tambah Venue') }}</h2>
-        @include('admin.partials.admin-nav')
-    </x-slot>
+<x-admin-layout title="Tambah Venue">
+    <x-admin.page-header title="Tambah Venue"
+                          subtitle="Daftarkan lokasi pernikahan baru"
+                          :back="route('admin.venues.index')" />
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @include('admin.partials.flash')
+    <form method="POST" action="{{ route('admin.venues.store') }}" enctype="multipart/form-data" class="max-w-5xl space-y-5">
+        @csrf
 
-            <form method="POST" action="{{ route('admin.venues.store') }}" enctype="multipart/form-data">
-                @csrf
-
-                <div class="space-y-6">
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Informasi Dasar</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div class="sm:col-span-2">
-                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nama Venue</label>
-                                <input id="name" type="text" name="name" value="{{ old('name') }}" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Deskripsi</label>
-                                <textarea id="description" name="description" rows="4"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('description') }}</textarea>
-                                <x-input-error :messages="$errors->get('description')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="capacity" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Kapasitas</label>
-                                <input id="capacity" type="number" name="capacity" value="{{ old('capacity') }}" min="1"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('capacity')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="size" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Luas (m²)</label>
-                                <input id="size" type="number" name="size" value="{{ old('size') }}" min="1"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('size')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipe Venue</label>
-                                <select id="type" name="type" required
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                    <option value="indoor" @selected(old('type') === 'indoor')>Indoor</option>
-                                    <option value="outdoor" @selected(old('type') === 'outdoor')>Outdoor</option>
-                                    <option value="indoor_outdoor" @selected(old('type') === 'indoor_outdoor')>Indoor & Outdoor</option>
-                                </select>
-                                <x-input-error :messages="$errors->get('type')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="virtual_tour_url" class="block text-sm font-medium text-gray-700 dark:text-gray-300">URL Virtual Tour</label>
-                                <input id="virtual_tour_url" type="url" name="virtual_tour_url" value="{{ old('virtual_tour_url') }}"
-                                       placeholder="https://..."
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('virtual_tour_url')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="starting_price" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Harga Mulai Dari</label>
-                                <input id="starting_price" type="number" name="starting_price" value="{{ old('starting_price') }}" step="0.01" min="0"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('starting_price')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Media & Lokasi</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div class="sm:col-span-2">
-                                <x-admin.media-picker name="hero_image" label="Foto Utama" />
-                            </div>
-
-                            <div>
-                                <label for="floor_plan" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Denah Lantai</label>
-                                <input id="floor_plan" type="file" name="floor_plan" accept="image/jpeg,image/png,image/webp,application/pdf"
-                                       class="mt-1 block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200 dark:text-gray-400 dark:file:bg-gray-700 dark:file:text-gray-200">
-                                <x-input-error :messages="$errors->get('floor_plan')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="address" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Alamat</label>
-                                <input id="address" type="text" name="address" value="{{ old('address') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('address')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="google_maps_embed" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Google Maps Embed URL</label>
-                                <input id="google_maps_embed" type="url" name="google_maps_embed" value="{{ old('google_maps_embed') }}"
-                                       placeholder="https://www.google.com/maps/embed?pb=..."
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('google_maps_embed')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Fasilitas & Layanan</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-3">
-                            <div>
-                                <label for="parking" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Parkir</label>
-                                <input id="parking" type="text" name="parking" value="{{ old('parking') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('parking')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="catering" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Katering</label>
-                                <input id="catering" type="text" name="catering" value="{{ old('catering') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('catering')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="decoration" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Dekorasi</label>
-                                <input id="decoration" type="text" name="decoration" value="{{ old('decoration') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('decoration')" class="mt-2" />
-                            </div>
-
-                            <div class="sm:col-span-3">
-                                <label for="facility_note" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Catatan Fasilitas</label>
-                                <textarea id="facility_note" name="facility_note" rows="3"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('facility_note') }}</textarea>
-                                <x-input-error :messages="$errors->get('facility_note')" class="mt-2" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">SEO & Publikasi</h3>
-                        </div>
-                        <div class="grid grid-cols-1 gap-6 p-6 sm:grid-cols-2">
-                            <div>
-                                <label for="meta_title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Title</label>
-                                <input id="meta_title" type="text" name="meta_title" value="{{ old('meta_title') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">
-                                <x-input-error :messages="$errors->get('meta_title')" class="mt-2" />
-                            </div>
-
-                            <div>
-                                <label for="meta_description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Meta Description</label>
-                                <textarea id="meta_description" name="meta_description" rows="3"
-                                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-indigo-600 dark:focus:ring-indigo-600">{{ old('meta_description') }}</textarea>
-                                <x-input-error :messages="$errors->get('meta_description')" class="mt-2" />
-                            </div>
-
-                            <div class="flex items-center space-x-6 sm:col-span-2">
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" name="is_featured" value="1" @checked(old('is_featured'))
-                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Unggulan</span>
-                                </label>
-                                <label class="inline-flex items-center">
-                                    <input type="checkbox" name="is_active" value="1" @checked(old('is_active', true))
-                                           class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-900 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800">
-                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Aktif</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end space-x-4">
-                        <a href="{{ route('admin.venues.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100">Batal</a>
-                        <button type="submit"
-                                class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
-                            Simpan Venue
-                        </button>
-                    </div>
+        <x-admin.card title="Informasi Dasar">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <x-admin.label for="name" required>Nama Venue</x-admin.label>
+                    <x-admin.input id="name" name="name" :value="old('name')" required />
+                    <x-admin.error name="name" />
                 </div>
-            </form>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="description">Deskripsi</x-admin.label>
+                    <x-admin.textarea id="description" name="description" rows="4" :value="old('description')" />
+                    <x-admin.error name="description" />
+                </div>
+
+                <div>
+                    <x-admin.label for="capacity">Kapasitas</x-admin.label>
+                    <x-admin.input id="capacity" name="capacity" type="number" :value="old('capacity')" min="1" />
+                    <x-admin.error name="capacity" />
+                </div>
+
+                <div>
+                    <x-admin.label for="size">Luas (m&sup2;)</x-admin.label>
+                    <x-admin.input id="size" name="size" type="number" :value="old('size')" min="1" />
+                    <x-admin.error name="size" />
+                </div>
+
+                <div>
+                    <x-admin.label for="type" required>Tipe Venue</x-admin.label>
+                    <x-admin.select id="type" name="type" required>
+                        <option value="indoor" @selected(old('type') === 'indoor')>Indoor</option>
+                        <option value="outdoor" @selected(old('type') === 'outdoor')>Outdoor</option>
+                        <option value="indoor_outdoor" @selected(old('type') === 'indoor_outdoor')>Indoor &amp; Outdoor</option>
+                    </x-admin.select>
+                    <x-admin.error name="type" />
+                </div>
+
+                <div>
+                    <x-admin.label for="starting_price">Harga Mulai Dari</x-admin.label>
+                    <x-admin.input id="starting_price" name="starting_price" type="number" :value="old('starting_price')" step="0.01" min="0" />
+                    <x-admin.error name="starting_price" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="virtual_tour_url">URL Virtual Tour</x-admin.label>
+                    <x-admin.input id="virtual_tour_url" name="virtual_tour_url" type="url"
+                                   :value="old('virtual_tour_url')" placeholder="https://..." />
+                    <x-admin.error name="virtual_tour_url" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <x-admin.card title="Media & Lokasi">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <x-admin.label for="hero_image">Foto Utama</x-admin.label>
+                    <x-admin.media-picker name="hero_image" label="Foto Utama" />
+                    <x-admin.error name="hero_image" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="floor_plan">Denah Lantai</x-admin.label>
+                    <x-admin.file id="floor_plan" name="floor_plan"
+                                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                                  hint="Format JPG, PNG, WEBP, atau PDF dengan maksimal 5 MB." />
+                    <x-admin.error name="floor_plan" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="address">Alamat</x-admin.label>
+                    <x-admin.input id="address" name="address" :value="old('address')" />
+                    <x-admin.error name="address" />
+                </div>
+
+                <div class="sm:col-span-2">
+                    <x-admin.label for="google_maps_embed">Google Maps Embed URL</x-admin.label>
+                    <x-admin.input id="google_maps_embed" name="google_maps_embed" type="url"
+                                   :value="old('google_maps_embed')" placeholder="https://www.google.com/maps/embed?pb=..." />
+                    <x-admin.error name="google_maps_embed" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <x-admin.card title="Fasilitas & Layanan">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+                <div>
+                    <x-admin.label for="parking">Parkir</x-admin.label>
+                    <x-admin.input id="parking" name="parking" :value="old('parking')" />
+                    <x-admin.error name="parking" />
+                </div>
+
+                <div>
+                    <x-admin.label for="catering">Katering</x-admin.label>
+                    <x-admin.input id="catering" name="catering" :value="old('catering')" />
+                    <x-admin.error name="catering" />
+                </div>
+
+                <div>
+                    <x-admin.label for="decoration">Dekorasi</x-admin.label>
+                    <x-admin.input id="decoration" name="decoration" :value="old('decoration')" />
+                    <x-admin.error name="decoration" />
+                </div>
+
+                <div class="sm:col-span-3">
+                    <x-admin.label for="facility_note">Catatan Fasilitas</x-admin.label>
+                    <x-admin.textarea id="facility_note" name="facility_note" rows="3" :value="old('facility_note')" />
+                    <x-admin.error name="facility_note" />
+                </div>
+            </div>
+        </x-admin.card>
+
+        <x-admin.card title="SEO & Publikasi">
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                    <x-admin.label for="meta_title">Meta Title</x-admin.label>
+                    <x-admin.input id="meta_title" name="meta_title" :value="old('meta_title')" />
+                    <x-admin.error name="meta_title" />
+                </div>
+
+                <div>
+                    <x-admin.label for="meta_description">Meta Description</x-admin.label>
+                    <x-admin.textarea id="meta_description" name="meta_description" rows="3" :value="old('meta_description')" />
+                    <x-admin.error name="meta_description" />
+                </div>
+            </div>
+
+            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <x-admin.checkbox name="is_featured" label="Unggulan" :value="old('is_featured')" />
+                <x-admin.checkbox name="is_active" label="Aktif" :value="old('is_active', true)" />
+            </div>
+        </x-admin.card>
+
+        <div class="flex items-center gap-3">
+            <x-admin.button type="submit" icon="check">Simpan Venue</x-admin.button>
+            <x-admin.button :href="route('admin.venues.index')" variant="secondary">Batal</x-admin.button>
         </div>
-    </div>
-</x-app-layout>
+    </form>
+</x-admin-layout>

@@ -1,89 +1,85 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">{{ __('Manajemen Agenda') }}</h2>
-        @include('admin.partials.admin-nav')
-    </x-slot>
+@php
+    $eventTypeLabels = [
+        'wedding' => 'Pernikahan',
+        'open_house' => 'Open House',
+        'expo' => 'Expo',
+        'venue_tour' => 'Tur Venue',
+        'food_testing' => 'Food Testing',
+        'promotion' => 'Promosi',
+    ];
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @include('admin.partials.flash')
+    $statusTones = [
+        'published' => 'green',
+        'cancelled' => 'red',
+        'draft' => 'gray',
+    ];
+@endphp
 
-            <div class="flex items-center justify-between">
-                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $events->total() }} agenda terdaftar</p>
-                <a href="{{ route('admin.events.create') }}"
-                   class="inline-flex items-center rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-200 dark:text-gray-800 dark:hover:bg-white dark:focus:ring-offset-gray-800">
-                    Tambah Agenda
-                </a>
-            </div>
+<x-admin-layout title="Agenda">
+    <x-admin.page-header title="Manajemen Agenda"
+                          subtitle="{{ $events->total() }} agenda terdaftar">
+        <x-slot:actions>
+            <x-admin.button :href="route('admin.events.create')" icon="plus">Tambah Agenda</x-admin.button>
+        </x-slot:actions>
+    </x-admin.page-header>
 
-            <div class="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-gray-200 dark:bg-gray-800 dark:ring-gray-700">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead>
-                            <tr class="bg-gray-50 dark:bg-gray-900/40">
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Judul</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Tipe</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Venue</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Tanggal Mulai</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Tanggal Selesai</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @php
-                                $eventTypeLabels = [
-                                    'wedding' => 'Pernikahan',
-                                    'open_house' => 'Open House',
-                                    'expo' => 'Expo',
-                                    'venue_tour' => 'Tur Venue',
-                                    'food_testing' => 'Food Testing',
-                                    'promotion' => 'Promosi',
-                                ];
-                            @endphp
-                            @forelse ($events as $event)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40">
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100">{{ $event->title }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4">
-                                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300">
-                                            {{ $eventTypeLabels[$event->event_type] ?? Str::title(str_replace('_', ' ', $event->event_type)) }}
-                                        </span>
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $event->venue?->name ?? '—' }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $event->start_date->format('d M Y') }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ $event->end_date?->format('d M Y') ?? '—' }}</td>
-                                    <td class="whitespace-nowrap px-6 py-4">
-                                        <span class="inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium {{ $event->status === 'published' ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300' : ($event->status === 'completed' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' : ($event->status === 'cancelled' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300')) }}">
-                                            {{ Str::title($event->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                                        <a href="{{ route('admin.events.edit', $event) }}" class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Edit</a>
-                                        <form method="POST" action="{{ route('admin.events.destroy', $event) }}" class="inline"
-                                              onsubmit="return confirm('Yakin ingin menghapus agenda ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="ml-3 text-red-600 hover:text-red-500 dark:text-red-400">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-6 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
-                                        Belum ada agenda. <a href="{{ route('admin.events.create') }}" class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">Buat agenda pertama</a>.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+    <x-admin.table :pagination="$events">
+        <x-slot:head>
+            <x-admin.th>Judul</x-admin.th>
+            <x-admin.th>Tipe</x-admin.th>
+            <x-admin.th>Venue</x-admin.th>
+            <x-admin.th>Tanggal Mulai</x-admin.th>
+            <x-admin.th>Tanggal Selesai</x-admin.th>
+            <x-admin.th>Status</x-admin.th>
+            <x-admin.th class="!text-right">Aksi</x-admin.th>
+        </x-slot:head>
 
-                @if ($events->hasPages())
-                    <div class="border-t border-gray-200 px-6 py-4 dark:border-gray-700">
-                        {{ $events->links() }}
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-800">
+            @forelse ($events as $event)
+                <tr class="transition hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                    <x-admin.td class="!font-medium !text-gray-900 dark:!text-white">{{ $event->title }}</x-admin.td>
+
+                    <x-admin.td>
+                        <x-admin.badge>
+                            {{ $eventTypeLabels[$event->event_type] ?? Str::title(str_replace('_', ' ', $event->event_type)) }}
+                        </x-admin.badge>
+                    </x-admin.td>
+
+                    <x-admin.td>{{ $event->venue?->name ?? '—' }}</x-admin.td>
+                    <x-admin.td>{{ $event->start_date->format('d M Y') }}</x-admin.td>
+                    <x-admin.td>{{ $event->end_date?->format('d M Y') ?? '—' }}</x-admin.td>
+
+                    <x-admin.td>
+                        <x-admin.badge :tone="$statusTones[$event->status] ?? 'gray'">
+                            {{ Str::title($event->status) }}
+                        </x-admin.badge>
+                    </x-admin.td>
+
+                    <x-admin.td class="!text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <x-admin.button :href="route('admin.events.edit', $event)" variant="secondary" icon="pencil">
+                                Edit
+                            </x-admin.button>
+
+                            <x-admin.delete-action :href="route('admin.events.destroy', $event)"
+                                                  confirm="Yakin ingin menghapus agenda ini?" />
+                        </div>
+                    </x-admin.td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7">
+                        <x-admin.empty title="Belum ada agenda"
+                                       description="Buat agenda pertama untuk manages event Anda." icon="calendar">
+                            <x-slot:action>
+                                <x-admin.button :href="route('admin.events.create')" icon="plus">
+                                    Tambah Agenda
+                                </x-admin.button>
+                            </x-slot:action>
+                        </x-admin.empty>
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </x-admin.table>
+</x-admin-layout>

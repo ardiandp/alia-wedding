@@ -153,4 +153,26 @@ class AdminPagesTest extends TestCase
         $staff = User::factory()->staff()->create();
         $this->actingAs($staff)->get(route('admin.venues.index'))->assertForbidden();
     }
+
+    public function test_user_management_pages_render(): void
+    {
+        $this->actingAs($this->admin);
+        $this->get(route('admin.users.index'))->assertOk()->assertSee($this->admin->name);
+        $this->get(route('admin.users.create'))->assertOk();
+
+        $target = User::factory()->staff()->create();
+        $this->get(route('admin.users.edit', $target))->assertOk()->assertSee($target->name);
+    }
+
+    public function test_staff_only_sees_crm_menu(): void
+    {
+        $staff = User::factory()->staff()->create();
+
+        $this->actingAs($staff)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertSee(route('admin.leads.index'))
+            ->assertDontSee(route('admin.venues.index'))
+            ->assertDontSee(route('admin.users.index'));
+    }
 }
