@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'venue_id', 'title', 'slug', 'event_type', 'description',
     'start_date', 'end_date', 'start_time', 'end_time', 'image',
-    'status', 'meta_title', 'meta_description',
+    'status', 'meta_title', 'meta_description', 'og_image', 'canonical_url',
 ])]
 class Event extends Model
 {

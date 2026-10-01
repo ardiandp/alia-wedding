@@ -1,6 +1,15 @@
 @php
-    $val = fn ($key) => old($key, is_array($settings) ? ($settings[$key] ?? '') : ($settings->get($key, '') ?? ''));
-    $checked = fn ($key) => (bool) old($key, is_array($settings) ? ($settings[$key] ?? false) : ($settings->get($key) ?? false));
+    $val = fn ($key) => old($key, $settings->get($key, '') ?? '');
+    $checked = fn ($key) => (bool) old($key, $settings->get($key, false));
+    $seoTitleConfig = json_encode([
+        'titleLimit' => 60,
+        'descriptionLimit' => 160,
+        'defaultTitle' => (string) $val('seo_default_title'),
+        'defaultDescription' => (string) $val('seo_default_description'),
+        'previewUrl' => url('/'),
+        'metaTitle' => (string) $val('seo_default_title'),
+        'metaDescription' => (string) $val('seo_default_description'),
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 @endphp
 
 <x-admin-layout title="Pengaturan Website">
@@ -64,6 +73,7 @@
             <div class="mt-5">
                 <x-admin.checkbox name="whatsapp_floating_enabled"
                                   label="Aktifkan Tombol WhatsApp Mengambang"
+                                  unchecked="0"
                                   :value="$checked('whatsapp_floating_enabled')" />
             </div>
         </x-admin.card>
@@ -124,21 +134,90 @@
             </div>
         </x-admin.card>
 
-        <x-admin.card title="SEO Default">
+        <div class="space-y-5" x-data="seoFields(@js($seoTitleConfig))">
+            <x-admin.card title="SEO Default">
+                <p class="mb-5 text-sm text-gray-500 dark:text-gray-400">
+                    Nilai ini dipakai pada halaman yang tidak punya pengaturan SEO sendiri,
+                    seperti halaman utama, profil, dan daftar venue.
+                </p>
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <div>
+                        <div class="flex items-baseline justify-between gap-3">
+                            <x-admin.label for="seo_default_title">Judul SEO Default</x-admin.label>
+                            <span class="shrink-0 text-xs" :class="counterClass('title')" x-text="counter('title')"></span>
+                        </div>
+                        <x-admin.input id="seo_default_title" name="seo_default_title" maxlength="255"
+                                       x-model="metaTitle" :value="$val('seo_default_title')" />
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            Dipakai sebagai judul cadangan halaman tanpa judul SEO khusus.
+                        </p>
+                        <x-admin.error name="seo_default_title" />
+                    </div>
+
+                    <div>
+                        <div class="flex items-baseline justify-between gap-3">
+                            <x-admin.label for="seo_default_description">Deskripsi SEO Default</x-admin.label>
+                            <span class="shrink-0 text-xs" :class="counterClass('description')" x-text="counter('description')"></span>
+                        </div>
+                        <x-admin.textarea id="seo_default_description" name="seo_default_description" rows="3"
+                                          maxlength="500" x-model="metaDescription"
+                                          :value="$val('seo_default_description')" />
+                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                            Muncul di bawah judul pada hasil pencarian.
+                        </p>
+                        <x-admin.error name="seo_default_description" />
+                    </div>
+                </div>
+            </x-admin.card>
+
+            <x-admin.card title="Pratinjau Google" subtitle="Tampilan perkiraan di halaman hasil pencarian">
+                <div class="rounded-lg border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-950">
+                    <p class="truncate text-xs text-gray-500 dark:text-gray-400" x-text="previewUrl"></p>
+                    <p class="mt-1 truncate text-lg leading-snug text-[#1a0dab] dark:text-[#8ab4f8]"
+                       x-text="previewTitle"></p>
+                    <p class="mt-1 text-sm text-[#4d5156] dark:text-[#bdc1c6]"
+                       x-text="previewDescription"></p>
+                </div>
+            </x-admin.card>
+        </div>
+
+        <x-admin.card title="Gambar Preview & Verifikasi">
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <x-admin.label for="seo_default_title">Judul SEO Default</x-admin.label>
-                    <x-admin.input id="seo_default_title" name="seo_default_title" :value="$val('seo_default_title')" />
-                    <x-admin.error name="seo_default_title" />
+                <div class="sm:col-span-2">
+                    <x-admin.media-picker name="seo_default_og_image"
+                                          label="Gambar Preview Default (Open Graph)"
+                                          hint="Dipakai pada halaman tanpa gambar khusus. Ukuran ideal 1200x630px."
+                                          :value="$val('seo_default_og_image')" />
+                    <x-admin.error name="seo_default_og_image" />
                 </div>
 
-                <div>
-                    <x-admin.label for="seo_default_description">Deskripsi SEO Default</x-admin.label>
-                    <x-admin.textarea id="seo_default_description" name="seo_default_description" rows="3"
-                                      :value="$val('seo_default_description')" />
-                    <x-admin.error name="seo_default_description" />
+                <div class="sm:col-span-2">
+                    <x-admin.label for="seo_google_site_verification">Google Site Verification</x-admin.label>
+                    <x-admin.input id="seo_google_site_verification" name="seo_google_site_verification"
+                                   :value="$val('seo_google_site_verification')"
+                                   placeholder="Paste kode verifikasi dari Google Search Console" />
+                    <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                        Kode dari Search Console. Biarkan kosong jika belum melakukan verifikasi.
+                    </p>
+                    <x-admin.error name="seo_google_site_verification" />
                 </div>
             </div>
+        </x-admin.card>
+
+        <x-admin.card title="Indeksasi Search Engine">
+            <x-admin.checkbox name="seo_allow_indexing"
+                              label="Izinkan mesin pencari mengindeks situs"
+                              unchecked="0"
+                              :value="$checked('seo_allow_indexing')" />
+
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                Jika dinonaktifkan, <code class="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-white/[0.03]">robots.txt</code>
+                akan memakai <code class="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-white/[0.03]">Disallow: /</code>
+                dan seluruh halaman diberi <code class="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-white/[0.03]">noindex</code>.
+                Halaman publik juga tidak akan tampil di sitemap.
+            </p>
+            <x-admin.error name="seo_allow_indexing" />
         </x-admin.card>
 
         <div class="flex items-center gap-3">

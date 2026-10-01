@@ -61,22 +61,10 @@
             </div>
         </x-admin.card>
 
-        <x-admin.card title="SEO">
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <x-admin.label for="meta_title">Meta Title</x-admin.label>
-                    <x-admin.input id="meta_title" name="meta_title" :value="old('meta_title', $article->meta_title)" />
-                    <x-admin.error name="meta_title" />
-                </div>
-
-                <div>
-                    <x-admin.label for="meta_description">Meta Description</x-admin.label>
-                    <x-admin.textarea id="meta_description" name="meta_description" rows="3"
-                                      :value="old('meta_description', $article->meta_description)" />
-                    <x-admin.error name="meta_description" />
-                </div>
-            </div>
-        </x-admin.card>
+        <x-admin.seo-fields :model="$article"
+                            :title="$article->title"
+                            entity-label="artikel"
+                            slug-base="/artikel" />
 
         <div class="flex items-center gap-3">
             <x-admin.button type="submit" icon="check">Simpan Perubahan</x-admin.button>

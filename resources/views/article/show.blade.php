@@ -1,4 +1,28 @@
-<x-layouts.public :meta-title="($article->title).' | '.setting('site_name')">
+@php
+    $articleTitle = \App\Support\Seo::title($article->title, $article->meta_title);
+    $articleDescription = \App\Support\Seo::description($article->meta_description, $article->excerpt);
+    $articleImage = \App\Support\Seo::image($article->og_image, $article->image);
+    $articleCanonical = \App\Support\Seo::canonical($article->canonical_url) ?? route('articles.show', $article);
+@endphp
+
+<x-layouts.public
+    :meta-title="$articleTitle"
+    :meta-description="$articleDescription"
+    :og-image="$articleImage"
+    :canonical="$articleCanonical"
+    og-type="article"
+    :json-ld="array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Article',
+        'headline' => $article->title,
+        'description' => $articleDescription,
+        'image' => array_filter([$articleImage]),
+        'datePublished' => $article->published_at?->toAtomString(),
+        'dateModified' => ($article->updated_at ?? $article->published_at)?->toAtomString(),
+        'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $articleCanonical],
+        'author' => ['@type' => 'Organization', 'name' => \App\Support\Seo::siteName()],
+        'publisher' => ['@type' => 'Organization', 'name' => \App\Support\Seo::siteName()],
+    ])">
     <section class="bg-rose-700 py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             @if($article->category)

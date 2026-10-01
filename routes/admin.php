@@ -47,8 +47,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff']
         Route::delete('venues/facilities/{facility}', [VenueController::class, 'destroyFacility'])->name('venues.facilities.destroy');
 
         Route::resource('packages', PackageController::class)->except(['show']);
-        Route::post('packages/{package}/items', [PackageController::class, 'storeItem'])->name('packages.items.store');
-        Route::delete('packages/items/{item}', [PackageController::class, 'destroyItem'])->name('packages.items.destroy');
 
         Route::resource('events', EventController::class)->except(['show']);
         Route::resource('articles', ArticleController::class)->except(['show']);

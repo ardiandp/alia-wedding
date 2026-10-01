@@ -3,23 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use Illuminate\Http\Request;
 
 class PackageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $packages = Package::with('items')
-            ->where('is_active', true)
+        $packages = Package::where('is_active', true)
+            ->with('venue')
             ->orderByDesc('is_featured')
             ->orderBy('price')
-            ->get();
+            ->paginate(12);
 
         return view('package.index', compact('packages'));
     }
 
     public function show(Package $package)
     {
-        $package->load(['items', 'venue']);
+        abort_if(! $package->is_active, 404);
+
+        $package->load(['venue', 'items' => fn ($q) => $q->orderBy('sort_order')]);
 
         return view('package.show', compact('package'));
     }

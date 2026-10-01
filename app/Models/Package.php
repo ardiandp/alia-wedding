@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable([
     'venue_id', 'name', 'slug', 'description', 'price', 'price_type',
     'image', 'guest_capacity', 'is_featured', 'is_active',
-    'meta_title', 'meta_description', 'og_image',
+    'meta_title', 'meta_description', 'og_image', 'canonical_url',
 ])]
 class Package extends Model
 {

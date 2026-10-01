@@ -9,25 +9,24 @@ class VenueController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Venue::with(['images', 'facilities'])
-            ->where('is_active', true);
-
-        if ($request->filled('type') && in_array($request->type, ['indoor', 'outdoor', 'indoor_outdoor'])) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->filled('capacity')) {
-            $query->where('capacity', '>=', (int) $request->capacity);
-        }
-
-        $venues = $query->orderByDesc('is_featured')->orderBy('name')->paginate(9)->withQueryString();
+        $venues = Venue::where('is_active', true)
+            ->withCount(['images', 'facilities', 'packages'])
+            ->orderByDesc('is_featured')
+            ->orderBy('name')
+            ->paginate(12);
 
         return view('venue.index', compact('venues'));
     }
 
     public function show(Venue $venue)
     {
-        $venue->load(['images', 'facilities', 'packages' => fn ($q) => $q->where('is_active', true)]);
+        abort_if(! $venue->is_active, 404);
+
+        $venue->load([
+            'images' => fn ($q) => $q->orderBy('sort_order'),
+            'facilities' => fn ($q) => $q->orderBy('sort_order'),
+            'packages' => fn ($q) => $q->where('is_active', true)->orderBy('name'),
+        ]);
 
         return view('venue.show', compact('venue'));
     }

@@ -71,7 +71,7 @@ Before installing, make sure you have the following tools installed on your mach
 |------|----------------|-------|
 | **PHP** | **8.3** | Required. The project uses `^8.3`. Install via [Laragon](https://laragon.org/) or [XAMPP](https://www.apachefriends.org/). |
 | **Composer** | Latest | PHP dependency manager. [Download](https://getcomposer.org/download/). |
-| **Node.js** | **18+** | Required by Vite and Tailwind CSS. Install via [NodeSource](https://nodejs.org/) or [nvm-windows](https://github.com/coreybutler/nvm-windows). |
+| **Node.js** | **20.19+ / 22.12+** | Required by Vite 8. Install via [NodeSource](https://nodejs.org/) or [nvm-windows](https://github.com/coreybutler/nvm-windows). |
 | **MySQL** | 5.7+ or 8.0+ | Database server. Included with Laragon. |
 | **Git** | Latest | Version control. [Download](https://git-scm.com/download/win). |
 
@@ -146,14 +146,16 @@ npm install
 ```
 
 This installs packages defined in `package.json`:
-- **Vite** `^8.0.0` — Build tool and dev server
-- **Tailwind CSS** `^3.1.0` — CSS framework
+- **Vite** `^8.0.0` — Build tool and dev server (requires Node.js **20.19+** or **22.12+**)
+- **Tailwind CSS** `^3.1.0` — CSS framework (processed through PostCSS, `darkMode: 'class'`)
 - **Alpine.js** `^3.4.2` — JavaScript framework
-- **@tailwindcss/vite** `^4.0.0` — Tailwind CSS Vite plugin
 - **postcss** `^8.4.31` — CSS processor
 - **laravel-vite-plugin** `^3.1` — Laravel/Vite integration
 - **@tailwindcss/forms** `^0.5.2` — Form styling plugin
 - **concurrently** `^10.0.3` — Run multiple commands
+
+> **Note:** Tailwind v4 is intentionally not used. Do not add `@tailwindcss/vite`; the
+> project compiles Tailwind v3 through `postcss.config.js`.
 
 ### 8. Build Frontend Assets
 
@@ -201,8 +203,58 @@ This runs:
 | Issue | Solution |
 |-------|----------|
 | `PHP is not recognized` | Add PHP to PATH (e.g., `C:\laragon\bin\php\php-8.3.xx\`) |
-| `Node.js version too old` | Upgrade to Node.js 18+ via [NodeSource](https://nodejs.org/) or `nvm install 18` |
+| `Node.js version too old` | Vite 8 needs Node **20.19+** or **22.12+**; install with `nvm install 24` |
 | `composer install fails` | Ensure PHP `^8.3` is active: `php -v` |
 | `npm install fails` | Delete `node_modules` and `package-lock.json`, then rerun `npm install` |
 | `Database connection error` | Verify MySQL is running and `.env` credentials are correct |
 | `FileDoesNotExist on seed` | Ensure `storage/app/public/seed/` contains the required images |
+| `could not find driver (Connection: sqlite)` when testing | Enable `pdo_sqlite` and `sqlite3` in your `php.ini` |
+| Admin sidebar looks unstyled | Run `npm run build`; the compiled CSS lives in `public/build` |
+
+---
+
+## Admin Panel (TailAdmin layout)
+
+All admin screens use a shared layout so styling stays consistent:
+
+- `resources/views/layouts/admin.blade.php` — sidebar, topbar, and page shell
+- `resources/views/components/admin/*` — cards, inputs, tables, badges, buttons,
+  media picker, page headers, and the SEO field group
+- Every admin view must extend `<x-admin-layout>`; no standalone `<x-app-layout>`
+
+### Roles
+
+| Role | Access |
+|------|--------|
+| `super_admin` | Full access, including user management |
+| `admin` | Full access to content, media, settings, and CRM |
+| `staff` | CRM only (leads/contacts); admin areas return `403` |
+
+Enforced by `EnsureUserIsAdmin` / `EnsureUserIsStaff` middleware aliases `admin` and
+`staff`.
+
+### SEO
+
+SEO metadata lives on the content tables themselves (`meta_title`, `meta_description`,
+`og_image`, `canonical_url`), not in a separate table.
+
+| Area | What it controls |
+|------|------------------|
+| `admin/settings` → "SEO Default" | `seo_default_title`, `seo_default_description`, `seo_default_og_image`, `seo_google_site_verification`, `seo_allow_indexing` |
+| Article / Agenda / Venue / Package forms | Per-page title, description, Open Graph image, canonical URL, plus live character counters and a Google SERP preview |
+| `App\Support\Seo` | Central resolver for titles, descriptions, images, canonical URLs, and robots directives |
+| `App\Support\UrlRedirect` | Records a `301` whenever an editor changes a title and the slug changes with it |
+
+Other behaviour worth knowing:
+
+- Slugs are generated from the title and de-duplicated with a numeric suffix (`-2`, `-3`, …).
+- Old URLs redirect permanently; unprefixed legacy slugs are handled by `Route::fallback()`,
+  and prefixed paths by the `NotFoundHttpException` handler in `bootstrap/app.php`.
+- `robots.txt` and `sitemap.xml` are served by `SitemapController`. Setting
+  `seo_allow_indexing` to `0` emits `Disallow: /`, drops the sitemap reference, and adds
+  `noindex, nofollow` to every public page.
+- Per-page JSON-LD (`Article`, `Event`, `EventVenue`, `Product`) is passed to the public
+  layout through the `json-ld` attribute; the site-wide `EventVenue` block is only rendered
+  when a page does not supply its own schema.
+- `setting()` memoizes per application instance. Call `setting_flush()` after writing settings
+  outside `SettingController`.

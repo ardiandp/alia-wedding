@@ -2,6 +2,7 @@
 
 use App\Models\MediaLibrary;
 use App\Models\Setting;
+use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 if (! function_exists('setting')) {
@@ -10,17 +11,29 @@ if (! function_exists('setting')) {
      */
     function setting(?string $key = null, mixed $default = null): mixed
     {
-        static $cached = null;
+        $container = app();
 
-        if ($cached === null) {
-            $cached = Setting::pluck('value', 'key')->all();
+        if (! $container->bound('settings.store')) {
+            $container->instance('settings.store', Setting::pluck('value', 'key')->all());
         }
+
+        $cached = $container->make('settings.store');
 
         if ($key === null) {
             return $cached;
         }
 
         return $cached[$key] ?? $default;
+    }
+}
+
+if (! function_exists('setting_flush')) {
+    /**
+     * Forget the memoized settings so the next read hits the database.
+     */
+    function setting_flush(): void
+    {
+        app()->forgetInstance('settings.store');
     }
 }
 

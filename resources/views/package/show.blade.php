@@ -1,4 +1,35 @@
-<x-layouts.public :meta-title="($package->name).' | '.setting('site_name')" :meta-description="$package->meta_description">
+@php
+    $packageTitle = \App\Support\Seo::title($package->name, $package->meta_title);
+    $packageDescription = \App\Support\Seo::description($package->meta_description, $package->description);
+    $packageImage = \App\Support\Seo::image($package->og_image, $package->image);
+    $packageCanonical = \App\Support\Seo::canonical($package->canonical_url) ?? route('packages.show', $package);
+@endphp
+
+<x-layouts.public
+    :meta-title="$packageTitle"
+    :meta-description="$packageDescription"
+    :og-image="$packageImage"
+    :canonical="$packageCanonical"
+    :json-ld="array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $package->name,
+        'description' => $packageDescription,
+        'url' => $packageCanonical,
+        'image' => array_filter([$packageImage]),
+        'category' => 'Wedding Package',
+        'offers' => filled($package->price)
+            ? array_filter([
+                '@type' => 'Offer',
+                'price' => (float) $package->price,
+                'priceCurrency' => 'IDR',
+                'availability' => $package->is_active
+                    ? 'https://schema.org/InStock'
+                    : 'https://schema.org/OutOfStock',
+                'url' => $packageCanonical,
+            ])
+            : null,
+    ])">
     {{-- Header --}}
     <section class="bg-rose-700 py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

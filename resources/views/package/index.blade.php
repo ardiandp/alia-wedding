@@ -37,9 +37,10 @@
                                 @endif
                                 <div class="mt-6 pt-4 border-t border-gray-100">
                                     @if($package->price)
-                                        <span class="text-2xl font-bold text-rose-700">{{ format_rupiah($package->price) }}</span>
-                                    @elseif($package->price_type === 'starting_from')
-                                        <span class="text-2xl font-bold text-rose-700">Custom</span>
+                                        @if($package->price_type === 'starting_from')
+                                            <span class="text-xs uppercase tracking-wide text-gray-500">Mulai dari</span>
+                                        @endif
+                                        <span class="block text-2xl font-bold text-rose-700">{{ format_rupiah($package->price) }}</span>
                                     @else
                                         <span class="text-2xl font-bold text-rose-700">Custom</span>
                                     @endif

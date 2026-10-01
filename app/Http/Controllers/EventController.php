@@ -29,7 +29,7 @@ class EventController extends Controller
     {
         $event->load('venue');
 
-        abort_if($event->status === 'cancelled', 404);
+        abort_if(in_array($event->status, ['draft', 'cancelled'], true), 404);
 
         return view('agenda.show', compact('event'));
     }

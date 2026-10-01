@@ -6,16 +6,39 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @php
-        $metaTitle = $metaTitle ?? setting('seo_default_title', config('app.name'));
-        $metaDesc = $metaDescription ?? setting('seo_default_description', '');
+        $metaTitle = $metaTitle ?? \App\Support\Seo::title(null, null);
+        $metaDesc = $metaDescription ?? \App\Support\Seo::description(null, null);
+        $resolvedOgImage = \App\Support\Seo::image($ogImage ?? null, null);
+        $canonicalUrl = \App\Support\Seo::canonical($canonical ?? null) ?? url()->current();
+        $resolvedOgType = $ogType ?? 'website';
     @endphp
 
     <title>{{ $metaTitle }}</title>
     <meta name="description" content="{{ $metaDesc }}">
+    <meta name="robots" content="{{ \App\Support\Seo::robots() }}">
+
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
     <meta property="og:title" content="{{ $metaTitle }}">
     <meta property="og:description" content="{{ $metaDesc }}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="{{ $resolvedOgType }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:site_name" content="{{ \App\Support\Seo::siteName() }}">
+    <meta property="og:locale" content="{{ \App\Support\Seo::locale() }}">
+    @if ($resolvedOgImage)
+        <meta property="og:image" content="{{ $resolvedOgImage }}">
+    @endif
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDesc }}">
+    @if ($resolvedOgImage)
+        <meta name="twitter:image" content="{{ $resolvedOgImage }}">
+    @endif
+
+    @if ($verificationCode = setting('seo_google_site_verification'))
+        <meta name="google-site-verification" content="{{ $verificationCode }}">
+    @endif
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=playfair-display:400,500,600,700|inter:300,400,500,600,700&display=swap" rel="stylesheet" />
@@ -26,6 +49,10 @@
         .font-display { font-family: 'Playfair Display', serif; }
         .font-body { font-family: 'Inter', sans-serif; }
     </style>
+
+    @if (filled($jsonLd ?? null))
+        <script type="application/ld+json">{!! json_encode($jsonLd, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+    @endif
 </head>
 <body class="font-body antialiased bg-white text-gray-900">
     {{-- Top Navigation --}}
@@ -175,21 +202,23 @@
     </div>
     <div class="lg:hidden h-16"></div>
 
-    {{-- Schema.org JSON-LD --}}
-    <script type="application/ld+json">
-    {
-        "@@context": "https://schema.org",
-        "@type": "EventVenue",
-        "name": "{{ setting('site_name') }}",
-        "description": "{{ setting('site_description') }}",
-        "url": "{{ url('/') }}",
-        "telephone": "{{ setting('contact_phone') }}",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "{{ setting('address') }}"
+    {{-- Per-page Schema.org JSON-LD (rendered in <head>) --}}
+    @if (blank($jsonLd ?? null))
+        <script type="application/ld+json">
+        {
+            "@@context": "https://schema.org",
+            "@type": "EventVenue",
+            "name": {{ Js::from(setting('site_name')) }},
+            "description": {{ Js::from(setting('site_description')) }},
+            "url": {{ Js::from(url('/')) }},
+            "telephone": {{ Js::from(setting('contact_phone')) }},
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": {{ Js::from(setting('address')) }}
+            }
         }
-    }
-    </script>
+        </script>
+    @endif
 
     @stack('scripts')
 </body>

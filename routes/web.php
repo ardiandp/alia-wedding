@@ -10,6 +10,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\VenueController;
+use App\Support\UrlRedirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,3 +67,23 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
+
+/*
+|--------------------------------------------------------------------------
+| Fallback: 301 Redirects From Changed Slugs
+|--------------------------------------------------------------------------
+|
+| When an editor changes a title, the slug changes with it. This fallback
+| catches the now-orphaned old URL and issues a permanent redirect so
+| inbound links and search rankings survive.
+|
+*/
+Route::fallback(function () {
+    $redirect = UrlRedirect::resolveFor(request()->getRequestUri());
+
+    if ($redirect === null) {
+        abort(404);
+    }
+
+    return redirect()->to($redirect['to_path'], $redirect['status_code']);
+});

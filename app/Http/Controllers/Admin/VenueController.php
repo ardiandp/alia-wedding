@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Venue;
 use App\Models\VenueFacility;
 use App\Models\VenueImage;
+use App\Support\UrlRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class VenueController extends Controller
@@ -49,6 +49,8 @@ class VenueController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'og_image' => ['nullable', 'string', 'max:255'],
+            'canonical_url' => ['nullable', 'string', 'max:500'],
         ]);
 
         $validated['hero_image'] = blank($validated['hero_image'] ?? null) ? null : $validated['hero_image'];
@@ -56,7 +58,7 @@ class VenueController extends Controller
             $validated['floor_plan'] = $request->file('floor_plan')->store('venues', 'public');
         }
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['slug'] = UrlRedirect::uniqueSlug($validated['name'], 'venues');
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);
 
@@ -94,6 +96,8 @@ class VenueController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'og_image' => ['nullable', 'string', 'max:255'],
+            'canonical_url' => ['nullable', 'string', 'max:500'],
         ]);
 
         $validated['hero_image'] = blank($validated['hero_image'] ?? null) ? null : $validated['hero_image'];
@@ -101,7 +105,13 @@ class VenueController extends Controller
             $validated['floor_plan'] = $request->file('floor_plan')->store('venues', 'public');
         }
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $newSlug = UrlRedirect::uniqueSlug($validated['name'], 'venues', $venue->id);
+
+        if ($newSlug !== $venue->slug) {
+            UrlRedirect::recordFor('venues.show', 'venue', $venue->slug, $newSlug);
+            $validated['slug'] = $newSlug;
+        }
+
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);
 

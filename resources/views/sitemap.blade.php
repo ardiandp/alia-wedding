@@ -1,8 +1,17 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>'; ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    @foreach($staticUrls as $url)
+    @foreach($staticUrls as $entry)
+        @php $loc = is_string($entry) ? $entry : $entry['loc']; @endphp
         <url>
-            <loc>{{ $url }}</loc>
+            <loc>{{ $loc }}</loc>
+            @if(! is_string($entry))
+                @if($entry['changefreq'] ?? null)
+                    <changefreq>{{ $entry['changefreq'] }}</changefreq>
+                @endif
+                @if($entry['priority'] ?? null)
+                    <priority>{{ $entry['priority'] }}</priority>
+                @endif
+            @endif
         </url>
     @endforeach
 
@@ -12,7 +21,12 @@
             @if($venue['lastmod'])
                 <lastmod>{{ $venue['lastmod']->toAtomString() }}</lastmod>
             @endif
-            <changefreq>weekly</changefreq>
+            @if($venue['changefreq'] ?? null)
+                <changefreq>{{ $venue['changefreq'] }}</changefreq>
+            @endif
+            @if($venue['priority'] ?? null)
+                <priority>{{ $venue['priority'] }}</priority>
+            @endif
         </url>
     @endforeach
 
@@ -22,7 +36,12 @@
             @if($package['lastmod'])
                 <lastmod>{{ $package['lastmod']->toAtomString() }}</lastmod>
             @endif
-            <changefreq>weekly</changefreq>
+            @if($package['changefreq'] ?? null)
+                <changefreq>{{ $package['changefreq'] }}</changefreq>
+            @endif
+            @if($package['priority'] ?? null)
+                <priority>{{ $package['priority'] }}</priority>
+            @endif
         </url>
     @endforeach
 
@@ -32,7 +51,12 @@
             @if($event['lastmod'])
                 <lastmod>{{ $event['lastmod']->toAtomString() }}</lastmod>
             @endif
-            <changefreq>daily</changefreq>
+            @if($event['changefreq'] ?? null)
+                <changefreq>{{ $event['changefreq'] }}</changefreq>
+            @endif
+            @if($event['priority'] ?? null)
+                <priority>{{ $event['priority'] }}</priority>
+            @endif
         </url>
     @endforeach
 
@@ -42,7 +66,12 @@
             @if($article['lastmod'])
                 <lastmod>{{ $article['lastmod']->toAtomString() }}</lastmod>
             @endif
-            <changefreq>weekly</changefreq>
+            @if($article['changefreq'] ?? null)
+                <changefreq>{{ $article['changefreq'] }}</changefreq>
+            @endif
+            @if($article['priority'] ?? null)
+                <priority>{{ $article['priority'] }}</priority>
+            @endif
         </url>
     @endforeach
 </urlset>

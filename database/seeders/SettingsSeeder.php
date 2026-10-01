@@ -36,12 +36,23 @@ class SettingsSeeder extends Seeder
             // SEO
             'seo_default_title' => 'Alia Wedding | Wedding Venue & Organizer Premium',
             'seo_default_description' => 'Venue pernikahan premium dengan wedding organizer profesional di Indonesia.',
+            'seo_default_og_image' => null,
+            'seo_google_site_verification' => null,
+            'seo_allow_indexing' => '1',
+        ];
+
+        $seoKeys = [
+            'seo_default_title',
+            'seo_default_description',
+            'seo_default_og_image',
+            'seo_google_site_verification',
+            'seo_allow_indexing',
         ];
 
         foreach ($settings as $key => $value) {
             Setting::updateOrCreate(
                 ['key' => $key],
-                ['value' => $value, 'group' => 'general']
+                ['value' => $value, 'group' => in_array($key, $seoKeys, true) ? 'seo' : 'general']
             );
         }
     }

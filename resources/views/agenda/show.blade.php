@@ -1,4 +1,37 @@
-<x-layouts.public :meta-title="($event->title).' | '.setting('site_name')">
+@php
+    $eventTitle = \App\Support\Seo::title($event->title, $event->meta_title);
+    $eventDescription = \App\Support\Seo::description($event->meta_description, $event->description);
+    $eventImage = \App\Support\Seo::image($event->og_image, $event->image);
+    $eventCanonical = \App\Support\Seo::canonical($event->canonical_url) ?? route('events.show', $event);
+    $venueName = $event->venue?->name;
+@endphp
+
+<x-layouts.public
+    :meta-title="$eventTitle"
+    :meta-description="$eventDescription"
+    :og-image="$eventImage"
+    :canonical="$eventCanonical"
+    og-type="article"
+    :json-ld="array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Event',
+        'name' => $event->title,
+        'description' => $eventDescription,
+        'startDate' => \Carbon\Carbon::parse($event->start_date)->toAtomString(),
+        'endDate' => $event->end_date
+            ? \Carbon\Carbon::parse($event->end_date)->toAtomString()
+            : null,
+        'eventStatus' => 'https://schema.org/EventScheduled',
+        'eventAttendanceMode' => 'https://schema.org/OfflineEventAttendanceMode',
+        'image' => array_filter([$eventImage]),
+        'url' => $eventCanonical,
+        'organizer' => ['@type' => 'Organization', 'name' => \App\Support\Seo::siteName()],
+        'location' => $venueName ? [
+            '@type' => 'Place',
+            'name' => $venueName,
+            'address' => ['@type' => 'PostalAddress', 'streetAddress' => $event->venue->address],
+        ] : null,
+    ])">
     <section class="bg-rose-700 py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="inline-block text-xs uppercase tracking-widest bg-white/20 text-white px-4 py-1.5 rounded-full font-semibold">{{ str_replace('_', ' ', $event->event_type) }}</span>

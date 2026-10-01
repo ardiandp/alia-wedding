@@ -171,15 +171,16 @@
                                         @endforeach
                                     </ul>
                                 @endif
-                                @if($package->price)
-                                    <div class="mt-6 pt-4 border-t border-gray-100">
-                                        <span class="text-2xl font-bold text-rose-700">{{ format_rupiah($package->price) }}</span>
-                                    </div>
-                                @elseif($package->price_type === 'custom')
-                                    <div class="mt-6 pt-4 border-t border-gray-100">
+                                <div class="mt-6 pt-4 border-t border-gray-100">
+                                    @if($package->price)
+                                        @if($package->price_type === 'starting_from')
+                                            <span class="text-xs uppercase tracking-wide text-gray-500">Mulai dari</span>
+                                        @endif
+                                        <span class="block text-2xl font-bold text-rose-700">{{ format_rupiah($package->price) }}</span>
+                                    @else
                                         <span class="text-2xl font-bold text-rose-700">Custom</span>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
                                 <a href="{{ route('packages.show', $package) }}" class="mt-6 block w-full text-center py-3 border-2 border-rose-700 text-rose-700 hover:bg-rose-700 hover:text-white font-semibold rounded-lg transition-all duration-300">
                                     Lihat Detail
                                 </a>

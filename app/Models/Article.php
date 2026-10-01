@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable([
     'title', 'slug', 'category', 'excerpt', 'body', 'image',
     'status', 'published_at', 'meta_title', 'meta_description',
+    'og_image', 'canonical_url',
 ])]
 class Article extends Model
 {

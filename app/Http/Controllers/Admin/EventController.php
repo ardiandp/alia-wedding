@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Venue;
+use App\Support\UrlRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EventController extends Controller
@@ -31,7 +31,9 @@ class EventController extends Controller
         $validated = $request->validate($this->rules());
 
         $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
-        $validated['slug'] = Str::slug($validated['title']);
+        $validated['og_image'] = blank($validated['og_image'] ?? null) ? null : $validated['og_image'];
+        $validated['canonical_url'] = blank($validated['canonical_url'] ?? null) ? null : $validated['canonical_url'];
+        $validated['slug'] = UrlRedirect::uniqueSlug($validated['title'], 'events');
 
         Event::create($validated);
 
@@ -50,7 +52,15 @@ class EventController extends Controller
         $validated = $request->validate($this->rules());
 
         $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
-        $validated['slug'] = Str::slug($validated['title']);
+        $validated['og_image'] = blank($validated['og_image'] ?? null) ? null : $validated['og_image'];
+        $validated['canonical_url'] = blank($validated['canonical_url'] ?? null) ? null : $validated['canonical_url'];
+
+        $newSlug = UrlRedirect::uniqueSlug($validated['title'], 'events', $event->id);
+
+        if ($newSlug !== $event->slug) {
+            UrlRedirect::recordFor('events.show', 'event', $event->slug, $newSlug);
+            $validated['slug'] = $newSlug;
+        }
 
         $event->update($validated);
 
@@ -79,6 +89,8 @@ class EventController extends Controller
             'status' => ['required', 'in:draft,published,completed,cancelled'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'og_image' => ['nullable', 'string', 'max:255'],
+            'canonical_url' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

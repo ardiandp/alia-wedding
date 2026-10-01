@@ -1,4 +1,27 @@
-<x-layouts.public :meta-title="($venue->name).' | '.setting('site_name')" :meta-description="$venue->meta_description">
+@php
+    $venueTitle = \App\Support\Seo::title($venue->name, $venue->meta_title);
+    $venueDescription = \App\Support\Seo::description($venue->meta_description, $venue->description);
+    $venueImage = \App\Support\Seo::image($venue->og_image, $venue->hero_image);
+    $venueCanonical = \App\Support\Seo::canonical($venue->canonical_url) ?? route('venues.show', $venue);
+@endphp
+
+<x-layouts.public
+    :meta-title="$venueTitle"
+    :meta-description="$venueDescription"
+    :og-image="$venueImage"
+    :canonical="$venueCanonical"
+    :json-ld="array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'EventVenue',
+        'name' => $venue->name,
+        'description' => $venueDescription,
+        'url' => $venueCanonical,
+        'image' => array_filter([$venueImage]),
+        'maximumAttendeeCapacity' => $venue->capacity ? (int) $venue->capacity : null,
+        'address' => filled($venue->address)
+            ? ['@type' => 'PostalAddress', 'streetAddress' => $venue->address]
+            : null,
+    ])">
     {{-- Hero --}}
     <section class="relative h-[60vh] overflow-hidden">
         <img src="{{ image_url($venue->hero_image) }}" alt="{{ $venue->name }}" class="w-full h-full object-cover" loading="eager">

@@ -65,27 +65,61 @@
             </div>
         </x-admin.card>
 
-        <x-admin.card title="SEO & Publikasi">
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <x-admin.label for="meta_title">Meta Title</x-admin.label>
-                    <x-admin.input id="meta_title" name="meta_title" :value="old('meta_title', $package->meta_title)" />
-                    <x-admin.error name="meta_title" />
+        <div x-data="{ items: {{ Js::from(old('items', $package->items->pluck('name')->all())) }} }">
+            <x-admin.card title="Rincian Paket"
+                          subtitle="Fitur dan layanan yang termasuk dalam paket ini">
+                <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">
+                    Urutan baris sesuai urutan tampil di halaman publik. Baris kosong diabaikan.
+                </p>
+
+                <div class="space-y-3">
+                    <template x-for="(item, index) in items" :key="index">
+                        <div class="flex items-center gap-3">
+                            <x-admin.input name="items[]"
+                                           x-model="items[index]"
+                                           placeholder="Contoh: Catering (200 pax)" />
+
+                            <button type="button" @click="items.splice(index, 1)"
+                                    class="inline-flex shrink-0 items-center rounded-xl border border-red-200 px-3 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 dark:border-red-500/40 dark:text-red-400 dark:hover:bg-red-500/10">
+                                Hapus
+                            </button>
+                        </div>
+                    </template>
+
+                    <p x-show="items.length === 0" x-cloak
+                       class="rounded-xl border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-400 dark:border-gray-700">
+                        Belum ada rincian. Tambahkan fitur yang sudah termasuk dalam paket.
+                    </p>
                 </div>
 
-                <div>
-                    <x-admin.label for="meta_description">Meta Description</x-admin.label>
-                    <x-admin.textarea id="meta_description" name="meta_description" rows="3"
-                                      :value="old('meta_description', $package->meta_description)" />
-                    <x-admin.error name="meta_description" />
-                </div>
-            </div>
+                <x-admin.button type="button" variant="secondary" icon="plus" class="mt-4"
+                                @click="items.push('')">Tambah Rincian</x-admin.button>
 
-            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <x-admin.checkbox name="is_featured" label="Unggulan" :value="old('is_featured', $package->is_featured)" />
-                <x-admin.checkbox name="is_active" label="Aktif" :value="old('is_active', $package->is_active)" />
+                @php
+                    $itemErrors = collect($errors->keys())
+                        ->filter(fn ($key) => $key === 'items' || str_starts_with($key, 'items.'))
+                        ->flatMap(fn ($key) => $errors->get($key))
+                        ->unique();
+                @endphp
+                @foreach ($itemErrors as $itemError)
+                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $itemError }}</p>
+                @endforeach
+            </x-admin.card>
+        </div>
+
+        <x-admin.card title="Publikasi">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <x-admin.checkbox name="is_featured" label="Paket Unggulan" unchecked="0"
+                                  :value="old('is_featured', $package->is_featured)" />
+                <x-admin.checkbox name="is_active" label="Tampilkan di Website" unchecked="0"
+                                  :value="old('is_active', $package->is_active)" />
             </div>
         </x-admin.card>
+
+        <x-admin.seo-fields :model="$package"
+                            :title="$package->name"
+                            entity-label="paket"
+                            slug-base="/packages" />
 
         <div class="flex items-center gap-3">
             <x-admin.button type="submit" icon="check">Simpan Perubahan</x-admin.button>

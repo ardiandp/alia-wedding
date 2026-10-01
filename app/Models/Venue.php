@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'hero_image', 'floor_plan', 'virtual_tour_url', 'facility_note',
     'parking', 'catering', 'decoration', 'address', 'google_maps_embed',
     'starting_price', 'is_featured', 'is_active',
-    'meta_title', 'meta_description', 'og_image',
+    'meta_title', 'meta_description', 'og_image', 'canonical_url',
 ])]
 class Venue extends Model
 {

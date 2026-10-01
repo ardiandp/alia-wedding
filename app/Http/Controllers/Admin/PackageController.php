@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Package;
 use App\Models\PackageItem;
 use App\Models\Venue;
+use App\Support\UrlRedirect;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PackageController extends Controller
@@ -41,14 +43,29 @@ class PackageController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'og_image' => ['nullable', 'string', 'max:255'],
+            'canonical_url' => ['nullable', 'string', 'max:500'],
+            'items' => ['nullable', 'array'],
+            'items.*' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $items = $validated['items'] ?? [];
+        unset($validated['items']);
+
         $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['og_image'] = blank($validated['og_image'] ?? null) ? null : $validated['og_image'];
+        $validated['canonical_url'] = blank($validated['canonical_url'] ?? null) ? null : $validated['canonical_url'];
+        $validated['slug'] = UrlRedirect::uniqueSlug($validated['name'], 'packages');
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);
 
-        Package::create($validated);
+        $package = DB::transaction(function () use ($validated, $items) {
+            $package = Package::create($validated);
+
+            $this->syncItems($package, $items);
+
+            return $package;
+        });
 
         return redirect()->route('admin.packages.index')->with('success', 'Package berhasil dibuat.');
     }
@@ -75,14 +92,36 @@ class PackageController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'og_image' => ['nullable', 'string', 'max:255'],
+            'canonical_url' => ['nullable', 'string', 'max:500'],
+            'items' => ['nullable', 'array'],
+            'items.*' => ['nullable', 'string', 'max:255'],
         ]);
 
+        $items = $request->has('items') ? $validated['items'] : null;
+        unset($validated['items']);
+
         $validated['image'] = blank($validated['image'] ?? null) ? null : $validated['image'];
-        $validated['slug'] = Str::slug($validated['name']);
+        $validated['og_image'] = blank($validated['og_image'] ?? null) ? null : $validated['og_image'];
+        $validated['canonical_url'] = blank($validated['canonical_url'] ?? null) ? null : $validated['canonical_url'];
+
+        $newSlug = UrlRedirect::uniqueSlug($validated['name'], 'packages', $package->id);
+
+        if ($newSlug !== $package->slug) {
+            UrlRedirect::recordFor('packages.show', 'package', $package->slug, $newSlug);
+            $validated['slug'] = $newSlug;
+        }
+
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_active'] = $request->boolean('is_active', true);
 
-        $package->update($validated);
+        DB::transaction(function () use ($package, $validated, $items) {
+            $package->update($validated);
+
+            if ($items !== null) {
+                $this->syncItems($package, $items);
+            }
+        });
 
         return back()->with('success', 'Package berhasil diperbarui.');
     }
@@ -94,25 +133,29 @@ class PackageController extends Controller
         return redirect()->route('admin.packages.index')->with('success', 'Package berhasil dihapus.');
     }
 
-    public function storeItem(Request $request, Package $package): RedirectResponse
+    /**
+     * Replace the package feature list, keeping the submitted order.
+     */
+    private function syncItems(Package $package, mixed $items): void
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-        ]);
+        $names = collect(Arr::wrap($items))
+            ->filter(fn ($name) => is_string($name))
+            ->map(fn (string $name) => trim($name))
+            ->filter()
+            ->unique()
+            ->values();
 
-        PackageItem::create([
-            'package_id' => $package->id,
-            'name' => $validated['name'],
-            'sort_order' => $package->items()->count(),
-        ]);
+        PackageItem::where('package_id', $package->id)->delete();
 
-        return back()->with('success', 'Item berhasil ditambahkan.');
-    }
+        if ($names->isEmpty()) {
+            return;
+        }
 
-    public function destroyItem(PackageItem $item): RedirectResponse
-    {
-        $item->delete();
-
-        return back()->with('success', 'Item berhasil dihapus.');
+        $package->items()->createMany(
+            $names->map(fn (string $name, int $index) => [
+                'name' => $name,
+                'sort_order' => $index,
+            ])->all()
+        );
     }
 }

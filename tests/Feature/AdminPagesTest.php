@@ -38,18 +38,34 @@ class AdminPagesTest extends TestCase
     {
         $this->actingAs($this->admin);
         $this->get(route('admin.venues.index'))->assertOk();
-        $this->get(route('admin.venues.create'))->assertOk();
+        $this->get(route('admin.venues.create'))
+            ->assertOk()
+            ->assertSee('name="is_active"', false)
+            ->assertSee('name="is_featured"', false)
+            ->assertSee('og_image', false)
+            ->assertSee('name="canonical_url"', false);
         $venue = Venue::first();
-        $this->get(route('admin.venues.edit', $venue))->assertOk();
+        $this->get(route('admin.venues.edit', $venue))
+            ->assertOk()
+            ->assertSee('name="is_active"', false)
+            ->assertSee('og_image', false);
     }
 
     public function test_packages_admin_pages_render(): void
     {
         $this->actingAs($this->admin);
         $this->get(route('admin.packages.index'))->assertOk();
-        $this->get(route('admin.packages.create'))->assertOk();
+        $this->get(route('admin.packages.create'))
+            ->assertOk()
+            ->assertSee('name="is_active"', false)
+            ->assertSee('name="is_featured"', false)
+            ->assertSee('og_image', false)
+            ->assertSee('name="canonical_url"', false);
         $package = Package::first();
-        $this->get(route('admin.packages.edit', $package))->assertOk();
+        $this->get(route('admin.packages.edit', $package))
+            ->assertOk()
+            ->assertSee('name="is_active"', false)
+            ->assertSee('og_image', false);
     }
 
     public function test_events_admin_pages_render(): void

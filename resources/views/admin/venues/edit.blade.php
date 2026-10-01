@@ -141,27 +141,19 @@
             </div>
         </x-admin.card>
 
-        <x-admin.card title="SEO & Publikasi">
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
-                    <x-admin.label for="meta_title">Meta Title</x-admin.label>
-                    <x-admin.input id="meta_title" name="meta_title" :value="old('meta_title', $venue->meta_title)" />
-                    <x-admin.error name="meta_title" />
-                </div>
-
-                <div>
-                    <x-admin.label for="meta_description">Meta Description</x-admin.label>
-                    <x-admin.textarea id="meta_description" name="meta_description" rows="3"
-                                      :value="old('meta_description', $venue->meta_description)" />
-                    <x-admin.error name="meta_description" />
-                </div>
-            </div>
-
-            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <x-admin.checkbox name="is_featured" label="Unggulan" :value="old('is_featured', $venue->is_featured)" />
-                <x-admin.checkbox name="is_active" label="Aktif" :value="old('is_active', $venue->is_active)" />
+        <x-admin.card title="Publikasi">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <x-admin.checkbox name="is_featured" label="Venue Unggulan" unchecked="0"
+                                  :value="old('is_featured', $venue->is_featured)" />
+                <x-admin.checkbox name="is_active" label="Tampilkan di Website" unchecked="0"
+                                  :value="old('is_active', $venue->is_active)" />
             </div>
         </x-admin.card>
+
+        <x-admin.seo-fields :model="$venue"
+                            :title="$venue->name"
+                            entity-label="venue"
+                            slug-base="/venues" />
 
         <div class="flex items-center gap-3">
             <x-admin.button type="submit" icon="check">Simpan Perubahan</x-admin.button>
