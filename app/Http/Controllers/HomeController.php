@@ -60,6 +60,7 @@ class HomeController extends Controller
             ->get();
 
         $latestArticles = Article::published()
+            ->with('categories')
             ->orderByDesc('published_at')
             ->orderByDesc('created_at')
             ->take(3)

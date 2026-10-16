@@ -8,6 +8,7 @@
             'label' => null,
             'items' => [
                 ['label' => 'Dashboard', 'icon' => 'grid', 'route' => 'admin.dashboard', 'pattern' => 'admin.dashboard', 'badge' => null],
+                ['label' => 'Statistik', 'icon' => 'chart', 'route' => 'admin.stats.index', 'pattern' => 'admin.stats.*', 'adminOnly' => true],
             ],
         ],
         [
@@ -23,6 +24,7 @@
                 ['label' => 'Paket', 'icon' => 'tag', 'route' => 'admin.packages.index', 'pattern' => 'admin.packages.*', 'adminOnly' => true],
                 ['label' => 'Agenda', 'icon' => 'calendar', 'route' => 'admin.events.index', 'pattern' => 'admin.events.*', 'adminOnly' => true],
                 ['label' => 'Artikel', 'icon' => 'document', 'route' => 'admin.articles.index', 'pattern' => 'admin.articles.*', 'adminOnly' => true],
+                ['label' => 'Kategori', 'icon' => 'folder', 'route' => 'admin.categories.index', 'pattern' => 'admin.categories.*', 'adminOnly' => true],
                 ['label' => 'Galeri', 'icon' => 'photo', 'route' => 'admin.galleries.index', 'pattern' => 'admin.galleries.*', 'adminOnly' => true],
                 ['label' => 'Testimoni', 'icon' => 'star', 'route' => 'admin.testimonials.index', 'pattern' => 'admin.testimonials.*', 'adminOnly' => true],
                 ['label' => 'Tim', 'icon' => 'users', 'route' => 'admin.teams.index', 'pattern' => 'admin.teams.*', 'adminOnly' => true],

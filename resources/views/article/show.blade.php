@@ -15,6 +15,7 @@
         '@context' => 'https://schema.org',
         '@type' => 'Article',
         'headline' => $article->title,
+        'articleSection' => $article->categories->pluck('name')->all() ?: null,
         'description' => $articleDescription,
         'image' => array_filter([$articleImage]),
         'datePublished' => $article->published_at?->toAtomString(),
@@ -25,8 +26,15 @@
     ])">
     <section class="bg-rose-700 py-16">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            @if($article->category)
-                <span class="inline-block text-xs uppercase tracking-widest bg-white/20 text-white px-4 py-1.5 rounded-full font-semibold">{{ $article->category }}</span>
+            @if($article->categories->isNotEmpty())
+                <div class="flex flex-wrap items-center justify-center gap-2">
+                    @foreach($article->categories as $category)
+                        <a href="{{ route('articles.category', $category) }}"
+                           class="inline-block text-xs uppercase tracking-widest bg-white/20 hover:bg-white/30 text-white px-4 py-1.5 rounded-full font-semibold transition">
+                            {{ $category->name }}
+                        </a>
+                    @endforeach
+                </div>
             @endif
             <h1 class="font-display text-4xl sm:text-5xl font-bold text-white mt-4">{{ $article->title }}</h1>
         </div>

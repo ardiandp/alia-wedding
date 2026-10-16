@@ -19,7 +19,15 @@
             @forelse ($articles as $article)
                 <tr class="transition hover:bg-gray-50 dark:hover:bg-white/[0.02]">
                     <x-admin.td class="!font-medium !text-gray-900 dark:!text-white">{{ $article->title }}</x-admin.td>
-                    <x-admin.td>{{ $article->category ?? '—' }}</x-admin.td>
+                    <x-admin.td>
+                        <div class="flex flex-wrap gap-1.5">
+                            @forelse ($article->categories as $category)
+                                <x-admin.badge tone="gray">{{ $category->name }}</x-admin.badge>
+                            @empty
+                                <span class="text-gray-400 dark:text-gray-600">—</span>
+                            @endforelse
+                        </div>
+                    </x-admin.td>
                     <x-admin.td>{{ $article->published_at?->format('d M Y') ?? '—' }}</x-admin.td>
 
                     <x-admin.td>

@@ -35,6 +35,8 @@ class SettingController extends Controller
         'seo_default_og_image' => 'seo',
         'seo_google_site_verification' => 'seo',
         'seo_allow_indexing' => 'seo',
+        'analytics_enabled' => 'analytics',
+        'analytics_gsc_embed_url' => 'analytics',
     ];
 
     public function index(): View
@@ -51,9 +53,11 @@ class SettingController extends Controller
         $rules = [];
 
         foreach (self::EDITABLE as $key => $group) {
-            $rules[$key] = $group === 'seo' && $key === 'seo_default_og_image'
-                ? ['nullable', 'string', 'max:255']
-                : ['nullable'];
+            $rules[$key] = match (true) {
+                $key === 'seo_default_og_image' => ['nullable', 'string', 'max:255'],
+                $key === 'analytics_gsc_embed_url' => ['nullable', 'url', 'max:2048'],
+                default => ['nullable'],
+            };
         }
 
         $validated = $request->validate($rules);
@@ -65,7 +69,7 @@ class SettingController extends Controller
 
             $value = $validated[$key];
 
-            if ($key === 'whatsapp_floating_enabled' || $key === 'seo_allow_indexing') {
+            if (in_array($key, ['whatsapp_floating_enabled', 'seo_allow_indexing', 'analytics_enabled'], true)) {
                 $value = $request->boolean($key) ? '1' : '0';
             }
 

@@ -7,8 +7,10 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PetaSitusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\TrackClickController;
 use App\Http\Controllers\VenueController;
 use App\Support\UrlRedirect;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,7 @@ Route::get('/agenda', [EventController::class, 'index'])->name('events.index');
 Route::get('/agenda/{event}', [EventController::class, 'show'])->name('events.show');
 
 Route::get('/artikel', [ArticleController::class, 'index'])->name('articles.index');
+Route::get('/artikel/kategori/{category}', [ArticleController::class, 'category'])->name('articles.category');
 Route::get('/artikel/{article}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
@@ -49,6 +52,16 @@ Route::get('/terima-kasih', [ContactController::class, 'thankyou'])->name('conta
 */
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+Route::get('/peta-situs', [PetaSitusController::class, 'index'])->name('peta-situs');
+
+/*
+|--------------------------------------------------------------------------
+| Analytics
+|--------------------------------------------------------------------------
+*/
+Route::post('/track/click', [TrackClickController::class, 'store'])
+    ->middleware('throttle:30,1')
+    ->name('track.click');
 
 /*
 |--------------------------------------------------------------------------

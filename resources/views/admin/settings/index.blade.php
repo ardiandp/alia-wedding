@@ -220,6 +220,32 @@
             <x-admin.error name="seo_allow_indexing" />
         </x-admin.card>
 
+        <x-admin.card title="Analitik & Search Console">
+            <x-admin.checkbox name="analytics_enabled"
+                              label="Aktifkan statistik pengunjung"
+                              unchecked="0"
+                              :value="$checked('analytics_enabled')" />
+
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+                Mencatat tampilan halaman, pengunjung unik, sumber kunjungan, dan klik tombol
+                (WhatsApp, telepon, kontak) secara mandiri di server. Tanpa cookie dan tanpa
+                layanan pihak ketiga — hanya tersimpan hash IP + perangkat yang tidak bisa dibalik.
+            </p>
+
+            <div class="mt-5">
+                <x-admin.label for="analytics_gsc_embed_url">Embed Laporan Search Console (opsional)</x-admin.label>
+                <x-admin.input id="analytics_gsc_embed_url" name="analytics_gsc_embed_url" type="url"
+                               :value="$val('analytics_gsc_embed_url')"
+                               placeholder="https://lookerstudio.google.com/embed/reporting/..." />
+                <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                    Tempel URL embed laporan Looker Studio yang memakai data Google Search Console
+                    untuk menampilkan klik, impresi, dan CTR langsung di halaman Statistik.
+                    Biarkan kosong jika tidak memerlukannya.
+                </p>
+                <x-admin.error name="analytics_gsc_embed_url" />
+            </div>
+        </x-admin.card>
+
         <div class="flex items-center gap-3">
             <x-admin.button type="submit" icon="check">Simpan Pengaturan</x-admin.button>
             <x-admin.button :href="route('admin.dashboard')" variant="secondary">Batal</x-admin.button>

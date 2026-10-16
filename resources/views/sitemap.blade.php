@@ -74,4 +74,19 @@
             @endif
         </url>
     @endforeach
+
+    @foreach($categories as $category)
+        <url>
+            <loc>{{ $category['loc'] }}</loc>
+            @if($category['lastmod'])
+                <lastmod>{{ $category['lastmod']->toAtomString() }}</lastmod>
+            @endif
+            @if($category['changefreq'] ?? null)
+                <changefreq>{{ $category['changefreq'] }}</changefreq>
+            @endif
+            @if($category['priority'] ?? null)
+                <priority>{{ $category['priority'] }}</priority>
+            @endif
+        </url>
+    @endforeach
 </urlset>

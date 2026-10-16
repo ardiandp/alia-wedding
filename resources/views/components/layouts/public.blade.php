@@ -126,6 +126,7 @@
                         <li><a href="{{ route('gallery.index') }}" class="hover:text-white transition">Gallery</a></li>
                         <li><a href="{{ route('events.index') }}" class="hover:text-white transition">Agenda</a></li>
                         <li><a href="{{ route('articles.index') }}" class="hover:text-white transition">Artikel</a></li>
+                        <li><a href="{{ route('peta-situs') }}" class="hover:text-white transition">Peta Situs</a></li>
                     </ul>
                 </div>
 

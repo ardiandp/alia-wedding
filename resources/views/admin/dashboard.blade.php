@@ -36,6 +36,42 @@
                           :href="route('admin.events.index')" />
         </div>
 
+        <!-- Traffic -->
+        <x-admin.card title="Pengunjung Website" subtitle="14 hari terakhir">
+            <x-slot:actions>
+                <x-admin.button :href="route('admin.stats.index')" variant="ghost" icon="arrow-right">
+                    Statistik Lengkap
+                </x-admin.button>
+            </x-slot:actions>
+
+            <div class="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <x-admin.stat label="Pengunjung (14 hari)"
+                              :value="$trafficSummary['visitors']"
+                              icon="users"
+                              tone="brand" />
+
+                <x-admin.stat label="Pengunjung Hari Ini"
+                              :value="$trafficSummary['today_visitors']"
+                              icon="chart"
+                              tone="green"
+                              :hint="$trafficSummary['today_views'].' tampilan hari ini'" />
+
+                <x-admin.stat label="Tampilan Halaman"
+                              :value="$trafficSummary['views']"
+                              icon="eye"
+                              tone="blue"
+                              :hint="$trafficSummary['pages_per_visit'].' halaman / pengunjung'" />
+
+                <x-admin.stat label="Klik CTA"
+                              :value="$trafficSummary['clicks']"
+                              icon="target"
+                              tone="amber"
+                              hint="WhatsApp, telepon, kontak" />
+            </div>
+
+            <x-admin.visitor-chart :series="$trafficSeries" :height="220" />
+        </x-admin.card>
+
         <!-- Recent leads -->
         <x-admin.card title="Prospek Terbaru" subtitle="5 prospek terakhir yang masuk.">
             <x-slot:actions>

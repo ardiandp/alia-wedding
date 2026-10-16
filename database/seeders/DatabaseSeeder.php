@@ -11,11 +11,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
+        $seeders = [
             SettingsSeeder::class,
             UserSeeder::class,
             MediaLibrarySeeder::class,
             DemoDataSeeder::class,
-        ]);
+        ];
+
+        // Demo traffic is skipped while testing so assertions stay deterministic.
+        if (! app()->runningUnitTests()) {
+            $seeders[] = AnalyticsSeeder::class;
+        }
+
+        $this->call($seeders);
     }
 }

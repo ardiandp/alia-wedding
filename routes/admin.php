@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\GalleryController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\MediaLibraryController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\StatsController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
@@ -24,6 +26,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Traffic & SEO analytics (admin only)
+    Route::get('statistik', [StatsController::class, 'index'])
+        ->middleware('admin')
+        ->name('stats.index');
 
     // Staff-accessible CRM
     Route::get('leads', [LeadController::class, 'index'])->name('leads.index');
@@ -50,6 +57,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'staff']
 
         Route::resource('events', EventController::class)->except(['show']);
         Route::resource('articles', ArticleController::class)->except(['show']);
+        Route::resource('categories', CategoryController::class)->except(['show']);
         Route::resource('galleries', GalleryController::class)->except(['show']);
         Route::resource('testimonials', TestimonialController::class)->except(['show']);
         Route::resource('teams', TeamController::class)->except(['show']);

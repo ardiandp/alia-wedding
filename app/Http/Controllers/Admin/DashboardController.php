@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Consultation;
 use App\Models\Event;
 use App\Models\Lead;
+use App\Support\Analytics;
 
 class DashboardController extends Controller
 {
@@ -35,10 +36,15 @@ class DashboardController extends Controller
             ->take(6)
             ->get();
 
+        $trafficDays = 14;
+        $trafficSummary = Analytics::summary($trafficDays);
+        $trafficSeries = Analytics::dailySeries($trafficDays);
+        $clickCounts = Analytics::clickCounts($trafficDays);
+
         return view('admin.dashboard', compact(
             'newLeadsCount', 'consultationCount', 'confirmedCount',
             'upcomingEventsCount', 'recentLeads', 'upcomingWeddings',
-            'upcomingConsultations',
+            'upcomingConsultations', 'trafficSummary', 'trafficSeries', 'clickCounts',
         ));
     }
 }

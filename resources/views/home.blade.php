@@ -346,7 +346,7 @@
                                 </div>
                             @endif
                             <div class="p-6">
-                                <span class="text-xs uppercase tracking-wide text-rose-600 font-semibold">{{ $article->category ?? 'Artikel' }}</span>
+                                <span class="text-xs uppercase tracking-wide text-rose-600 font-semibold">{{ $article->categories->isNotEmpty() ? $article->categories->pluck('name')->join(', ') : 'Artikel' }}</span>
                                 <h3 class="mt-2 font-semibold text-gray-900 group-hover:text-rose-700 transition text-sm">{{ $article->title }}</h3>
                                 <p class="mt-3 text-xs text-gray-400">{{ $article->published_at?->translatedFormat('d F Y') }}</p>
                             </div>

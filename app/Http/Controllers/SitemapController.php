@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Event;
 use App\Models\Package;
 use App\Models\Venue;
@@ -57,6 +58,13 @@ class SitemapController extends Controller
                 'priority' => '0.7',
                 'changefreq' => 'monthly',
             ]);
+        $categories = Category::whereHas('articles', fn ($q) => $q->published())->get()
+            ->map(fn (Category $c) => [
+                'loc' => route('articles.category', $c),
+                'lastmod' => $c->updated_at,
+                'priority' => '0.5',
+                'changefreq' => 'weekly',
+            ]);
 
         $content = response()->view('sitemap', [
             'staticUrls' => $staticUrls,
@@ -64,6 +72,7 @@ class SitemapController extends Controller
             'packages' => $packages,
             'events' => $events,
             'articles' => $articles,
+            'categories' => $categories,
         ]);
 
         return $content->header('Content-Type', 'application/xml');

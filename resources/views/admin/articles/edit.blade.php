@@ -9,16 +9,20 @@
 
         <x-admin.card title="Informasi Artikel">
             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div>
+                <div class="sm:col-span-2">
                     <x-admin.label for="title" required>Judul Artikel</x-admin.label>
                     <x-admin.input id="title" name="title" :value="old('title', $article->title)" required />
                     <x-admin.error name="title" />
                 </div>
 
-                <div>
-                    <x-admin.label for="category">Kategori</x-admin.label>
-                    <x-admin.input id="category" name="category" :value="old('category', $article->category)" />
-                    <x-admin.error name="category" />
+                <div class="sm:col-span-2">
+                    <x-admin.label>Kategori</x-admin.label>
+                    @include('admin.articles.partials.category-checkboxes', [
+                        'categories' => $categories,
+                        'selected' => old('categories', $article->categories->pluck('id')->all()),
+                    ])
+                    <x-admin.error name="categories" />
+                    <x-admin.error name="categories.*" />
                 </div>
 
                 <div>

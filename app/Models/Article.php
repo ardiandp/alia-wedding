@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[Fillable([
-    'title', 'slug', 'category', 'excerpt', 'body', 'image',
+    'title', 'slug', 'excerpt', 'body', 'image',
     'status', 'published_at', 'meta_title', 'meta_description',
     'og_image', 'canonical_url',
 ])]
@@ -16,6 +17,11 @@ class Article extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'article_category');
+    }
 
     public function scopePublished(Builder $query): Builder
     {

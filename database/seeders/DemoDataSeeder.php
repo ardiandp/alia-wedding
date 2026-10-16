@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\About;
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Event;
 use App\Models\Gallery;
 use App\Models\HomepageContent;
@@ -26,6 +27,7 @@ class DemoDataSeeder extends Seeder
         $this->seedServices();
         $this->seedPackages();
         $this->seedEvents();
+        $this->seedCategories();
         $this->seedArticles();
         $this->seedGalleries();
         $this->seedTestimonials();
@@ -236,12 +238,34 @@ class DemoDataSeeder extends Seeder
         }
     }
 
+    private function seedCategories(): void
+    {
+        $categories = [
+            'Tips Pernikahan' => 'Panduan dan tips praktis seputar perencanaan pernikahan.',
+            'Dekorasi' => 'Inspirasi dekorasi dan tata panggung pernikahan.',
+            'Checklist' => 'Daftar persiapan penting menjelang hari bahagia.',
+            'Inspirasi' => 'Referensi konsep dan tren pernikahan.',
+        ];
+
+        $i = 0;
+        foreach ($categories as $name => $description) {
+            Category::updateOrCreate(
+                ['slug' => Str::slug($name)],
+                [
+                    'name' => $name,
+                    'description' => $description,
+                    'sort_order' => $i++,
+                ]
+            );
+        }
+    }
+
     private function seedArticles(): void
     {
         $articles = [
             [
                 'title' => 'Tips Memilih Venue Pernikahan yang Tepat',
-                'category' => 'Tips Pernikahan',
+                'categories' => ['Tips Pernikahan'],
                 'image' => 'seed/events/expo.jpg',
                 'published_at' => now()->subDays(2),
                 'excerpt' => 'Panduan praktis memilih venue impian yang sesuai dengan budget, jumlah tamu, dan konsep pernikahan Anda.',
@@ -249,7 +273,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'title' => 'Inspirasi Dekorasi Pernikahan Taman',
-                'category' => 'Dekorasi',
+                'categories' => ['Dekorasi', 'Inspirasi'],
                 'image' => 'seed/services/s-dekorasi.jpg',
                 'published_at' => now()->subDays(5),
                 'excerpt' => 'Dekorasi outdoor nan romantis dengan nuansa hijau alami untuk pernikahan taman yang tak terlupakan.',
@@ -257,7 +281,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'title' => '6 Hal yang Wajib Dipersiapkan 3 Bulan Sebelum Hari H',
-                'category' => 'Checklist',
+                'categories' => ['Checklist', 'Tips Pernikahan'],
                 'image' => 'seed/events/fair.jpg',
                 'published_at' => now()->subDays(9),
                 'excerpt' => 'Dari vendor hingga balasan undangan, ini daftar persiapan penting agar pernikahan Anda berjalan lancar.',
@@ -265,7 +289,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'title' => 'Rangkaian Acara Pernikahan Adat yang Menyentuh',
-                'category' => 'Inspirasi',
+                'categories' => ['Inspirasi'],
                 'image' => 'seed/venues/garden-1.jpg',
                 'published_at' => now()->subDays(14),
                 'excerpt' => 'Menggabungkan adat dan modern dalam satu rangkaian acara yang khidmat dan berkesan bagi keluarga.',
@@ -273,7 +297,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'title' => 'Mengenal Paket Pernikahan All-in-One',
-                'category' => 'Tips Pernikahan',
+                'categories' => ['Tips Pernikahan', 'Checklist'],
                 'image' => 'seed/packages/platinum.jpg',
                 'published_at' => null,
                 'status' => 'draft',
@@ -283,16 +307,22 @@ class DemoDataSeeder extends Seeder
         ];
 
         foreach ($articles as $data) {
-            Article::create([
+            $categoryNames = $data['categories'];
+            unset($data['categories']);
+
+            $article = Article::create([
                 'title' => $data['title'],
                 'slug' => Str::slug($data['title']),
-                'category' => $data['category'],
                 'excerpt' => $data['excerpt'],
                 'body' => $data['body'],
                 'image' => $data['image'],
                 'status' => $data['status'] ?? 'published',
                 'published_at' => $data['published_at'],
             ]);
+
+            $article->categories()->sync(
+                Category::whereIn('name', $categoryNames)->pluck('id')->all()
+            );
         }
     }
 
